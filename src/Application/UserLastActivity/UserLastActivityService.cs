@@ -22,7 +22,7 @@ namespace YAGO.FantasyWorld.Server.Application.UserLastActivity
         /// Актуализация даты и времени последней активности пользователя
         /// </summary>
         /// <param name="user">Данные пользователя</param>
-        /// <param name="cancellationToken">ТОкен отмены</param>
+        /// <param name="cancellationToken">Токен отмены</param>
         public async Task UpdateUserLastActivity(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
