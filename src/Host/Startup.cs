@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Application.WeatherForecastService;
 
 namespace YAGO.FantasyWorld.Server.Host
 {
@@ -26,12 +27,18 @@ namespace YAGO.FantasyWorld.Server.Host
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            AddAppServices(services);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "YAGO.FantasyWorld.Server.Host", Version = "v1" });
             });
+        }
+
+        private static void AddAppServices(IServiceCollection services)
+        {
+            services.AddScoped<WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

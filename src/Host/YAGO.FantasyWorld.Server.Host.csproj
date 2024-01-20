@@ -8,4 +8,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Application\YAGO.FantasyWorld.Server.Application.csproj" />
+    <ProjectReference Include="..\Domain\YAGO.FantasyWorld.Server.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
