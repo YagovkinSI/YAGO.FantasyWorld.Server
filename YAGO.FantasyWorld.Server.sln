@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAGO.FantasyWorld.Server.Host", "YAGO.FantasyWorld.Server.Host\YAGO.FantasyWorld.Server.Host.csproj", "{CB3951DD-74FD-4605-99FE-44F691A47C90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAGO.FantasyWorld.Server.Host", "src\Host\YAGO.FantasyWorld.Server.Host.csproj", "{CB3951DD-74FD-4605-99FE-44F691A47C90}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2E1EB39B-C888-4818-8C17-A06C72B0DAEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +20,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CB3951DD-74FD-4605-99FE-44F691A47C90} = {2E1EB39B-C888-4818-8C17-A06C72B0DAEE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0DAA50E-CDAE-4311-8776-6BED97C1D645}
