@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using System;
-using static System.Net.WebRequestMethods;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace YAGO.FantasyWorld.Server.Host.Middlewares
 {
@@ -37,7 +35,7 @@ namespace YAGO.FantasyWorld.Server.Host.Middlewares
                 _logger.LogError(ex.Message, ex);
                 context.Response.StatusCode = 500;
                 context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Неизвестная ошибка."); 
+                await context.Response.WriteAsync("Неизвестная ошибка.");
             }
         }
     }
