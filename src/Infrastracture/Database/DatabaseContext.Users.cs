@@ -3,7 +3,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Infrastracture.Database.Models;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
@@ -13,13 +12,13 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         {
             cancellationToken.ThrowIfCancellationRequested();
             var user = await Users.FindAsync(new object[] { userId }, cancellationToken: cancellationToken);
-            return ToDomain(user);
+            return user?.ToDomain();
         }
 
         public async Task<Domain.User> FindByUserName(string userName, CancellationToken cancellationToken)
         {
             var user = await Users.FirstOrDefaultAsync(u => u.UserName == userName, cancellationToken: cancellationToken);
-            return ToDomain(user);
+            return user?.ToDomain();
         }
 
         public async Task UpdateLastActivity(string userId, CancellationToken cancellationToken)
@@ -32,19 +31,6 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             user.LastActivity = DateTimeOffset.Now;
             Update(user);
             await SaveChangesAsync();
-        }
-
-        private static Domain.User ToDomain(User user)
-        {
-            return user == null
-                ? null
-                : new Domain.User
-                (
-                    user.Id,
-                    user.UserName,
-                    user.Registration,
-                    user.LastActivity
-                );
         }
     }
 }

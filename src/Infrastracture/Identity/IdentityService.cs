@@ -93,14 +93,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
             if (user == null)
                 return AuthorizationData.NotAuthorized;
 
-            var domainUser = new Domain.User
-            (
-                user.Id,
-                user.UserName,
-                user.Registration,
-                user.LastActivity
-            );
-
+            var domainUser = user.ToDomain();
             return GetAuthorizationDataAsync(domainUser);
         }
 
