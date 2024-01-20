@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using YAGO.FantasyWorld.Server.Application.Authorization;
+using YAGO.FantasyWorld.Server.Application.UserLastActivity;
 using YAGO.FantasyWorld.Server.Application.WeatherForecastService;
+using YAGO.FantasyWorld.Server.Host.Middlewares;
 using YAGO.FantasyWorld.Server.Infrastracture;
 
 namespace YAGO.FantasyWorld.Server.Host
@@ -30,11 +33,17 @@ namespace YAGO.FantasyWorld.Server.Host
             });
         }
 
-        private static void AddAppServices(IServiceCollection services) => services.AddScoped<WeatherForecastService>();
+        private static void AddAppServices(IServiceCollection services)
+        {
+            services.AddScoped<UserLastActivityService>();
+            services.AddScoped<AuthorizationService>();
+            services.AddScoped<WeatherForecastService>();
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
+            app.UseMiddleware<ExceptionMiddleware>();
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "YAGO.FantasyWorld.Server.Host v1"));
 
@@ -42,6 +51,7 @@ namespace YAGO.FantasyWorld.Server.Host
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

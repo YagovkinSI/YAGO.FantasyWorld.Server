@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YAGO.FantasyWorld.Server.Application.Interfaces;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
@@ -14,6 +15,9 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")
                 ));
+
+            services
+                .AddScoped<IUserDatabaseService, DatabaseContext>();
 
             return services;
         }

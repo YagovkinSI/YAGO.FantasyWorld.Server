@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+using YAGO.FantasyWorld.Server.Infrastracture.Database;
+using YAGO.FantasyWorld.Server.Infrastracture.Identity;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture
 {
@@ -10,6 +11,10 @@ namespace YAGO.FantasyWorld.Server.Infrastracture
             this IServiceCollection services,
             IConfiguration configuration)
         {
+            services
+                .AddDatabase(configuration)
+                .AddIdentity();
+
             return services;
         }
     }
