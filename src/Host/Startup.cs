@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using YAGO.FantasyWorld.Server.Application.Authorization;
 using YAGO.FantasyWorld.Server.Application.UserLastActivity;
-using YAGO.FantasyWorld.Server.Application.WeatherForecastService;
 using YAGO.FantasyWorld.Server.Host.Middlewares;
 using YAGO.FantasyWorld.Server.Infrastracture;
 
@@ -37,7 +36,6 @@ namespace YAGO.FantasyWorld.Server.Host
         {
             services.AddScoped<UserLastActivityService>();
             services.AddScoped<AuthorizationService>();
-            services.AddScoped<WeatherForecastService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
