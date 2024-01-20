@@ -28,10 +28,10 @@ namespace YAGO.FantasyWorld.Server.Application.WeatherForecastService
 
             var rng = new Random();
             var result = Enumerable
-                .Range(1, 5)
+                .Range(0, 5)
                 .Select(index => new WeatherForecast
                 (
-                    date: DateTimeOffset.Now.AddDays(index),
+                    date: DateTimeOffset.Now.Date.AddDays(index),
                     temperature: rng.Next(-20, 55),
                     summary: _summaries[rng.Next(_summaries.Length)]
                 ));
