@@ -31,7 +31,7 @@ namespace YAGO.FantasyWorld.Server.Application.WeatherForecastService
                 .Range(1, 5)
                 .Select(index => new WeatherForecast
                 (
-                    date: DateTime.Now.AddDays(index),
+                    date: DateTimeOffset.Now.AddDays(index),
                     temperature: rng.Next(-20, 55),
                     summary: _summaries[rng.Next(_summaries.Length)]
                 ));

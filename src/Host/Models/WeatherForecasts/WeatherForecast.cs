@@ -7,7 +7,7 @@ namespace YAGO.FantasyWorld.Server.Host.Models.WeatherForecasts
     /// </summary>
     public class WeatherForecast
     {
-        internal WeatherForecast(DateTime date, int temperatureC, string summary)
+        internal WeatherForecast(DateTimeOffset date, int temperatureC, string summary)
         {
             Date = date;
             TemperatureC = temperatureC;
@@ -17,7 +17,7 @@ namespace YAGO.FantasyWorld.Server.Host.Models.WeatherForecasts
         /// <summary>
         /// Дата
         /// </summary>
-        public DateTime Date { get; }
+        public DateTimeOffset Date { get; }
 
         /// <summary>
         /// Температура в градусах Цельсия
