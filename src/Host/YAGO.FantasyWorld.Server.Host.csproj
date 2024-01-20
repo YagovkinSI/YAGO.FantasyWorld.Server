@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\YAGO.FantasyWorld.Server.Application.csproj" />
     <ProjectReference Include="..\Domain\YAGO.FantasyWorld.Server.Domain.csproj" />
+    <ProjectReference Include="..\Infrastracture\YAGO.FantasyWorld.Server.Infrastracture.csproj" />
   </ItemGroup>
 
 </Project>
