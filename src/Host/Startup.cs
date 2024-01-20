@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using YAGO.FantasyWorld.Server.Application.WeatherForecastService;
+using YAGO.FantasyWorld.Server.Infrastracture;
 
 namespace YAGO.FantasyWorld.Server.Host
 {
@@ -18,6 +19,8 @@ namespace YAGO.FantasyWorld.Server.Host
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddInfrastructure(Configuration);
+
             AddAppServices(services);
 
             services.AddControllers();

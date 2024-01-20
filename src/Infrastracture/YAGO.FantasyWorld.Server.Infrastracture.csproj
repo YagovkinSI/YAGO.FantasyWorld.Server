@@ -1,17 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Application\YAGO.FantasyWorld.Server.Application.csproj" />
     <ProjectReference Include="..\Domain\YAGO.FantasyWorld.Server.Domain.csproj" />
-    <ProjectReference Include="..\Infrastracture\YAGO.FantasyWorld.Server.Infrastracture.csproj" />
   </ItemGroup>
 
 </Project>
