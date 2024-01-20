@@ -64,10 +64,10 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
             cancellationToken.ThrowIfCancellationRequested();
             var organization = await FindOrganization(organizationId, cancellationToken);
             if (organization == null)
-                throw new ApplicationException(string.Format("Организации с ID={0} не найдено.", organizationId), 400);
+                throw new ApplicationException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
 
             if (organization.UserId != null)
-                throw new ApplicationException(string.Format("Организации с ID={0} уже занята другим игроком.", organizationId), 400);
+                throw new ApplicationException(string.Format("Организация с ID={0} уже занята другим игроком.", organizationId), 400);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _organizationDatabaseService.SetUserForOrganization(organizationId, authorizationData.User.Id, cancellationToken);

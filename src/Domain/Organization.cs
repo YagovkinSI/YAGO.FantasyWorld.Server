@@ -5,6 +5,15 @@
     /// </summary>
     public class Organization
     {
+        public Organization(long id, string name, string description, int power, string userId)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            Power = power;
+            UserId = userId;
+        }
+
         /// <summary>
         /// Идентификатор организации
         /// </summary>
@@ -13,12 +22,17 @@
         /// <summary>
         /// Название организации
         /// </summary>
-        public long Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Описание организации
         /// </summary>
-        public long Description { get; set; }
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Могущество организации
+        /// </summary>
+        public int Power { get; set; }
 
         /// <summary>
         /// Идентификатор пользователя
