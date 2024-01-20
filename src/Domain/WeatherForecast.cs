@@ -3,7 +3,7 @@ using System;
 namespace YAGO.FantasyWorld.Server.Domain
 {
     /// <summary>
-    /// Прогноз погоды
+    /// РџСЂРѕРіРЅРѕР· РїРѕРіРѕРґС‹
     /// </summary>
     public class WeatherForecast
     {
@@ -15,17 +15,17 @@ namespace YAGO.FantasyWorld.Server.Domain
         }
 
         /// <summary>
-        /// Дата
+        /// Р”Р°С‚Р°
         /// </summary>
         public DateTimeOffset Date { get; }
 
         /// <summary>
-        /// Температура (в градусах Цельсия)
+        /// РўРµРјРїРµСЂР°С‚СѓСЂР° (РІ РіСЂР°РґСѓСЃР°С… Р¦РµР»СЊСЃРёСЏ)
         /// </summary>
         public int Temperature { get; }
 
         /// <summary>
-        /// Общее описание
+        /// РћР±С‰РµРµ РѕРїРёСЃР°РЅРёРµ
         /// </summary>
         public string Summary { get; }
     }
