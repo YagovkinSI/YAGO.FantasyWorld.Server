@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Application.Authorization.Models;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Domain;
 using YAGO.FantasyWorld.Server.Domain.Exceptions;
@@ -51,7 +52,8 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
         /// <param name="organizationId">Идентификатор организации</param>
         /// <param name="claimsPrincipal">Ифнормация о пользователе запроса</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        public async Task SetCurrentUserForOrganization(long organizationId, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
+        /// <returns>Данные авторизации</returns>
+        public async Task<AuthorizationData> SetCurrentUserForOrganization(long organizationId, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var authorizationData = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
@@ -71,6 +73,9 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
 
             cancellationToken.ThrowIfCancellationRequested();
             await _organizationDatabaseService.SetUserForOrganization(organizationId, authorizationData.User.Id, cancellationToken);
+
+            authorizationData.User.OrganizationId = organizationId;
+            return authorizationData;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Application.Authorization.Models;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Domain;
 
@@ -13,8 +14,7 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
     {
         private readonly OrganizationService _organizationService;
 
-        public OrganizationController(
-            OrganizationService organizationService)
+        public OrganizationController(OrganizationService organizationService)
         {
             _organizationService = organizationService;
         }
@@ -37,10 +37,10 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
 
         [HttpGet]
         [Route("setCurrentUserForOrganization")]
-        public async Task SetCurrentUserForOrganization(long organizationId, CancellationToken cancellationToken)
+        public async Task<AuthorizationData> SetCurrentUserForOrganization(long organizationId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await _organizationService.SetCurrentUserForOrganization(organizationId, HttpContext.User, cancellationToken);
+            return await _organizationService.SetCurrentUserForOrganization(organizationId, HttpContext.User, cancellationToken);
         }
     }
 }
