@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using YAGO.FantasyWorld.Server.Application.Admin;
 using YAGO.FantasyWorld.Server.Application.Authorization;
+using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.UserLastActivity;
+using YAGO.FantasyWorld.Server.Application.Users;
 using YAGO.FantasyWorld.Server.Host.Middlewares;
 using YAGO.FantasyWorld.Server.Infrastracture;
 
@@ -36,6 +39,9 @@ namespace YAGO.FantasyWorld.Server.Host
         {
             services.AddScoped<UserLastActivityService>();
             services.AddScoped<AuthorizationService>();
+            services.AddScoped<OrganizationService>();
+            services.AddScoped<AdminService>();
+            services.AddScoped<UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

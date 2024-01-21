@@ -7,12 +7,13 @@ namespace YAGO.FantasyWorld.Server.Domain
 	/// </summary>
 	public class User
     {
-        public User(string id, string name, DateTimeOffset registration, DateTimeOffset lastActivity)
+        public User(string id, string name, DateTimeOffset registration, DateTimeOffset lastActivity, long? organozationId)
         {
             Id = id;
             Name = name;
             Registration = registration;
             LastActivity = lastActivity;
+            OrganizationId = organozationId;
         }
 
         /// <summary>
@@ -34,5 +35,10 @@ namespace YAGO.FantasyWorld.Server.Domain
         /// Дата и время последней активности пользователья в системе
         /// </summary>
         public DateTimeOffset LastActivity { get; set; }
+
+        /// <summary>
+        /// Идентификатор организации пользователя
+        /// </summary>
+        public long? OrganizationId { get; set; }
     }
 }

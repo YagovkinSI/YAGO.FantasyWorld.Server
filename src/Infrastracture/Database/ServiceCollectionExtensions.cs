@@ -7,6 +7,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
     public static partial class ServiceCollectionExtensions
     {
+
         public static IServiceCollection AddDatabase(
                 this IServiceCollection services,
                 IConfiguration configuration)
@@ -17,7 +18,9 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                 ));
 
             services
-                .AddScoped<IUserDatabaseService, DatabaseContext>();
+                .AddScoped<IUserDatabaseService, DatabaseContext>()
+                .AddScoped<IOrganizationDatabaseService, DatabaseContext>()
+                .AddScoped<IFillDatabaseService, DatabaseContext>();
 
             return services;
         }

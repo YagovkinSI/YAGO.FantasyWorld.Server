@@ -47,20 +47,23 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
         public async Task<AuthorizationData> RegisterAsync(string userName, string password, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var user = new User
+            var newUser = new User
             {
                 Email = string.Empty,
                 UserName = userName,
                 Registration = DateTimeOffset.Now,
                 LastActivity = DateTimeOffset.Now
             };
-            var result = await _userManager.CreateAsync(user, password);
-
-            cancellationToken.ThrowIfCancellationRequested();
+            var result = await _userManager.CreateAsync(newUser, password);
             if (!result.Succeeded)
                 throw GetRegisterExeption(result.Errors);
-            await _signInManager.SignInAsync(user, true);
-            return ToAuthorizationData(user);
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var user = await _userDatabaseService.FindByUserName(userName, cancellationToken);
+            await _signInManager.PasswordSignInAsync(userName, password, true, false);
+
+            return GetAuthorizationDataAsync(user);
+
         }
 
         public async Task<AuthorizationData> LoginAsync(string userName, string password, CancellationToken cancellationToken)
@@ -93,14 +96,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
             if (user == null)
                 return AuthorizationData.NotAuthorized;
 
-            var domainUser = new Domain.User
-            (
-                user.Id,
-                user.UserName,
-                user.Registration,
-                user.LastActivity
-            );
-
+            var domainUser = user.ToDomain();
             return GetAuthorizationDataAsync(domainUser);
         }
 
