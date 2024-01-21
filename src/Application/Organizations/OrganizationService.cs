@@ -49,7 +49,7 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
         /// Установить для организации текущего пользователя как владельца
         /// </summary>
         /// <param name="organizationId">Идентификатор организации</param>
-        /// <param name="currentUserId">Идентификатор текущего пользователя</param>
+        /// <param name="claimsPrincipal">Ифнормация о пользователе запроса</param>
         /// <param name="cancellationToken">Токен отмены</param>
         public async Task SetCurrentUserForOrganization(long organizationId, ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
         {
@@ -66,7 +66,7 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
             if (organization == null)
                 throw new ApplicationException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
 
-            if (organization.UserId != null)
+            if (organization.UserLink != null)
                 throw new ApplicationException(string.Format("Организация с ID={0} уже занята другим игроком.", organizationId), 400);
 
             cancellationToken.ThrowIfCancellationRequested();

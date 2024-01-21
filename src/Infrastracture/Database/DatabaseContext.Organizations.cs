@@ -14,7 +14,9 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         public async Task<IEnumerable<Organization>> GetOrganizations(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var organizations = await Organizations.ToArrayAsync(cancellationToken: cancellationToken);
+            var organizations = await Organizations
+                .Include(o => o.User)
+                .ToArrayAsync(cancellationToken: cancellationToken);
             return organizations
                 .Select(o => o.ToDomain());
         }
@@ -22,14 +24,17 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         public async Task<Organization> FindOrganization(long organizationId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var organization = await Organizations.FindAsync(new object[] { organizationId }, cancellationToken: cancellationToken);
+            var organization = await Organizations
+                .Include(o => o.User)
+                .SingleOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
             return organization?.ToDomain();
         }
 
         public async Task SetUserForOrganization(long organizationId, string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var organization = await Organizations.FindAsync(new object[] { organizationId }, cancellationToken: cancellationToken);
+            var organization = await Organizations
+                .FindAsync(new object[] { organizationId }, cancellationToken: cancellationToken);
             if (organization == null)
                 throw new ApplicationException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
 

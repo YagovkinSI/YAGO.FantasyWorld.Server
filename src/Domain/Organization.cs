@@ -1,17 +1,19 @@
-﻿namespace YAGO.FantasyWorld.Server.Domain
+﻿using YAGO.FantasyWorld.Server.Domain.Common;
+
+namespace YAGO.FantasyWorld.Server.Domain
 {
     /// <summary>
     /// Организация
     /// </summary>
     public class Organization
     {
-        public Organization(long id, string name, string description, int power, string userId)
+        public Organization(long id, string name, string description, int power, IdLink<string> userLink)
         {
             Id = id;
             Name = name;
             Description = description;
             Power = power;
-            UserId = userId;
+            UserLink = userLink;
         }
 
         /// <summary>
@@ -35,8 +37,8 @@
         public int Power { get; set; }
 
         /// <summary>
-        /// Идентификатор пользователя
+        /// Ссылка на пользователя
         /// </summary>
-        public string UserId { get; set; }
+        public IdLink<string> UserLink { get; set; }
     }
 }

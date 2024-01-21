@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Domain;
 
@@ -14,7 +13,8 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
     {
         private readonly OrganizationService _organizationService;
 
-        public OrganizationController(OrganizationService organizationService, IAuthorizationService authorizationService)
+        public OrganizationController(
+            OrganizationService organizationService)
         {
             _organizationService = organizationService;
         }

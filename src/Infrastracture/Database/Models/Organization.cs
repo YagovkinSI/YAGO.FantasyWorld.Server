@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using YAGO.FantasyWorld.Server.Domain.Common;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 {
@@ -25,13 +26,17 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 
         public Domain.Organization ToDomain()
         {
+            var userLink = UserId == null
+                ? null
+                : new IdLink<string>(User.Id, User.UserName);
+
             return new Domain.Organization
             (
                 Id,
                 Name,
                 Description,
                 Power,
-                UserId
+                userLink
             );
         }
     }

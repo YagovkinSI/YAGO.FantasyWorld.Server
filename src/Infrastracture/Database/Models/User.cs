@@ -10,7 +10,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
         public DateTimeOffset Registration { get; set; }
         public DateTimeOffset LastActivity { get; set; }
 
-        public virtual IEnumerable<Organization> Organizations { get; set; }
+        public virtual List<Organization> Organizations { get; set; }
 
         internal Domain.User ToDomain()
         {
