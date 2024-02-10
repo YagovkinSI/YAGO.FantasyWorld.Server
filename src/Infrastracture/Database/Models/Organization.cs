@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using YAGO.FantasyWorld.Server.Domain;
 using YAGO.FantasyWorld.Server.Domain.Common;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
@@ -12,6 +14,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
         public string UserId { get; set; }
 
         public virtual User User { get; set; }
+        public virtual List<Quest> Quests { get; set; }
 
         internal static void CreateModel(ModelBuilder builder)
         {

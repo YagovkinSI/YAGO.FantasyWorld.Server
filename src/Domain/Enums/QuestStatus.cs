@@ -16,13 +16,8 @@
         Created = 1,
 
         /// <summary>
-        /// Выбрана опция
-        /// </summary>
-        OptionSelected = 2,
-
-        /// <summary>
         /// Завершено
         /// </summary>
-        Completed = 3
+        Completed = 2
     }
 }
