@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using YAGO.FantasyWorld.Server.Application.Admin;
 using YAGO.FantasyWorld.Server.Application.Authorization;
 using YAGO.FantasyWorld.Server.Application.Organizations;
+using YAGO.FantasyWorld.Server.Application.Quests;
 using YAGO.FantasyWorld.Server.Application.UserLastActivity;
 using YAGO.FantasyWorld.Server.Application.Users;
 using YAGO.FantasyWorld.Server.Host.Middlewares;
@@ -42,6 +43,7 @@ namespace YAGO.FantasyWorld.Server.Host
             services.AddScoped<OrganizationService>();
             services.AddScoped<AdminService>();
             services.AddScoped<UserService>();
+            services.AddScoped<QuestService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
