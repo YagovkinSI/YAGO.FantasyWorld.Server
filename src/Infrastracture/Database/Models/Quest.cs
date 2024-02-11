@@ -26,5 +26,18 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
             model.HasIndex(m => m.Created);
             model.HasIndex(m => m.Status);
         }
+
+        internal Domain.Quest ToDomain()
+        {
+            return new Domain.Quest
+            {
+                Id = Id,
+                OrganizationId = OrganizationId,
+                Created = Created,
+                Type = Type,
+                QuestEntity1Id = QuestEntity1Id,
+                Status = Status
+            };
+        }
     }
 }
