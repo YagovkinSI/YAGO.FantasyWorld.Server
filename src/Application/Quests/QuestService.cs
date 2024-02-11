@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
-using YAGO.FantasyWorld.Server.Application.Quests.QuestsForUser;
+using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
 using YAGO.FantasyWorld.Server.Domain;
 using YAGO.FantasyWorld.Server.Domain.Enums;
+using YAGO.FantasyWorld.Server.Domain.Exceptions;
 using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
@@ -20,8 +22,6 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         private readonly IAuthorizationService _authorizationService;
         private readonly IQuestDatabaseService _questDatabaseService;
         private readonly OrganizationService _organizationService;
-
-        private readonly QuestForUserMapper _questForUserMapper;
 
         private readonly Random _random = new();
 
@@ -44,19 +44,17 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             _authorizationService = authorizationService;
             _questDatabaseService = questDatabaseService;
             _organizationService = organizationService;
-
-            _questForUserMapper = new QuestForUserMapper(_organizationService);
         }
 
         /// <summary>
         /// Получение квеста
         /// </summary>
+        /// <param name="claimsPrincipal">Ифнормация о пользователе запроса</param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<QuestData> GetQuest(System.Security.Claims.ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
+        /// <returns>Данные по квесту</returns>
+        public async Task<QuestData> GetQuest(ClaimsPrincipal claimsPrincipal, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
             var user = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
             if (!user.IsAuthorized)
                 throw new ApplicationException("Для получения квеста необходимо авторизоваться");
@@ -69,6 +67,33 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
                 ?? await GetNewQuest(user.User.OrganizationId.Value, lastQuests, cancellationToken);
         }
 
+        /// <summary>
+        /// Установка варианта решения квеста
+        /// </summary>
+        /// <param name="claimsPrincipal">Ифнормация о пользователе запроса</param>
+        /// <param name="questId">Идентификатор квеста</param>
+        /// <param name="questOptionIndex">Индекс выбранного варианта</param>
+        /// <param name="cancellationToken">ТОкен отмены</param>
+        /// <returns>Результат квеста</returns>
+        public async Task<string> SetQuestOption(ClaimsPrincipal claimsPrincipal, long questId, int questOptionIndex, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var user = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
+            if (!user.IsAuthorized)
+                throw new ApplicationException("Для получения квеста необходимо авторизоваться");
+            if (user.User.OrganizationId == null)
+                throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
+
+            var quest = await _questDatabaseService.FindQuest(questId, cancellationToken);
+            if (quest.OrganizationId != user.User.OrganizationId)
+                throw new ApplicationException("Некорректный идентификатор квеста.");
+            if (quest.Status != QuestStatus.Created)
+                throw new ApplicationException("Неверный статус квеста.");
+
+            var questDatails = GetQuestDatails(quest);
+            return await questDatails.HandleQuestOption(questOptionIndex, cancellationToken);
+        }
+
         private async Task<QuestData> GetNewQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -76,7 +101,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
 
             cancellationToken.ThrowIfCancellationRequested();
             newQuest = await _questDatabaseService.CreateQuest(newQuest, cancellationToken);
-            var questForUser = await _questForUserMapper.GetQuestForUser(newQuest, cancellationToken);
+            var questForUser = await GetQuestForUser(newQuest, cancellationToken);
             return new QuestData(questForUser);
         }
 
@@ -94,7 +119,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             if (notCompletedQuests.Any())
             {
                 var lastNotCompletedQuest = notCompletedQuests.Last();
-                var lastQuestForUser = await _questForUserMapper.GetQuestForUser(lastNotCompletedQuest, cancellationToken);
+                var lastQuestForUser = await GetQuestForUser(lastNotCompletedQuest, cancellationToken);
                 return new QuestData(lastQuestForUser);
             }
 
@@ -148,6 +173,23 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
                 QuestEntity1Id = questEntity1Id,
                 Status = QuestStatus.Created
             };
+        }
+
+        private IQuestDetails GetQuestDatails(Quest quest)
+        {
+            return quest.Type switch
+            {
+                QuestType.Unknown => throw new ApplicationException("Неизвестный тип квеста! Обратитесь к разработчику."),
+                QuestType.BaseQuest => new BaseQuest(_organizationService),
+                _ => throw new NotImplementedApplicationException(),
+            };
+        }
+
+        private async Task<QuestForUser> GetQuestForUser(Quest quest, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var questDetails = GetQuestDatails(quest);
+            return await questDetails.GetQuestForUser(quest, cancellationToken);
         }
     }
 }

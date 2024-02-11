@@ -4,13 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
     public partial class DatabaseContext : IQuestDatabaseService
     {
-        public async Task<Quest> CreateQuest(Quest quest, CancellationToken cancellationToken)
+        public async Task<Domain.Quest> CreateQuest(Domain.Quest quest, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var questDatabase = new Models.Quest
@@ -26,7 +25,15 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             return questDatabase.ToDomain();
         }
 
-        public async Task<IEnumerable<Quest>> GetLastQuestes(long organizationId, int count, CancellationToken cancellationToken)
+        public async Task<Domain.Quest> FindQuest(long questId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var quest = await Quests.FindAsync(new object[] { questId }, cancellationToken: cancellationToken);
+            return quest.ToDomain();
+        }
+
+
+        public async Task<IEnumerable<Domain.Quest>> GetLastQuestes(long organizationId, int count, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var quests = await Quests

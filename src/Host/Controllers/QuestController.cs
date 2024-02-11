@@ -24,5 +24,13 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
             cancellationToken.ThrowIfCancellationRequested();
             return await _questService.GetQuest(HttpContext.User, cancellationToken);
         }
+
+        [HttpPost]
+        [Route("setQuestOption")]
+        public async Task<string> SetQuestOption(long questId, int questOptionIndex, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await _questService.SetQuestOption(HttpContext.User, questId, questOptionIndex, cancellationToken);
+        }
     }
 }

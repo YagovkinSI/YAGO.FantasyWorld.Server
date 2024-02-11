@@ -26,5 +26,13 @@ namespace YAGO.FantasyWorld.Server.Application.Interfaces
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Созданный квест</returns>
         Task<Quest> CreateQuest(Quest quest, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Поиск квеста по Id
+        /// </summary>
+        /// <param name="questId">Идентификатор квеста</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Данные квеста</returns>
+        Task<Quest> FindQuest(long questId, CancellationToken cancellationToken);
     }
 }

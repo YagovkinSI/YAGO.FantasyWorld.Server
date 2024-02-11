@@ -11,7 +11,7 @@ namespace YAGO.FantasyWorld.Server.Domain
         /// Флаг готовности квеста
         /// </summary>
         public bool IsQuestReady { get; set; }
-        
+
         /// <summary>
         /// Время готовности квеста
         /// </summary>
@@ -22,7 +22,7 @@ namespace YAGO.FantasyWorld.Server.Domain
         /// </summary>
         public QuestForUser Quest { get; set; }
 
-        public QuestData(QuestForUser quest) 
+        public QuestData(QuestForUser quest)
         {
             IsQuestReady = true;
             Quest = quest;
