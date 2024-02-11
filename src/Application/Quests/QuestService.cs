@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
+using YAGO.FantasyWorld.Server.Application.Quests.QuestsForUser;
 using YAGO.FantasyWorld.Server.Domain;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
@@ -19,6 +20,8 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         private readonly IAuthorizationService _authorizationService;
         private readonly IQuestDatabaseService _questDatabaseService;
         private readonly OrganizationService _organizationService;
+
+        private readonly QuestForUserMapper _questForUserMapper;
 
         private readonly Random _random = new();
 
@@ -41,6 +44,8 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             _authorizationService = authorizationService;
             _questDatabaseService = questDatabaseService;
             _organizationService = organizationService;
+
+            _questForUserMapper = new QuestForUserMapper(_organizationService);
         }
 
         /// <summary>
@@ -58,23 +63,42 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             if (user.User.OrganizationId == null)
                 throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
 
-            cancellationToken.ThrowIfCancellationRequested();
             var lastQuests = await _questDatabaseService.GetLastQuestes(user.User.OrganizationId.Value, QUEST_TIMEOUTS.Length, cancellationToken);
-            var notCompletedQuests = lastQuests.Where(q => q.Status == QuestStatus.Created);
-            if (notCompletedQuests.Any())
-                return new QuestData(notCompletedQuests.Last());
+            return await TryGetNotCompletedQuest(lastQuests, cancellationToken)
+                ?? TryGetNotReadyQuestData(lastQuests, cancellationToken)
+                ?? await GetNewQuest(user.User.OrganizationId.Value, lastQuests, cancellationToken);
+        }
 
+        private async Task<QuestData> GetNewQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
+        {
             cancellationToken.ThrowIfCancellationRequested();
-            var questReadyDateTime = CalcQuestReadyDateTime(lastQuests.ToArray());
-            if (questReadyDateTime > DateTimeOffset.Now)
-                return new QuestData(questReadyDateTime);
-
-            cancellationToken.ThrowIfCancellationRequested();
-            var newQuest = await GenerateNewQuest(user.User.OrganizationId.Value, lastQuests, cancellationToken);
+            var newQuest = await GenerateNewQuest(organizationId, lastQuests, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             newQuest = await _questDatabaseService.CreateQuest(newQuest, cancellationToken);
-            return new QuestData(newQuest);
+            var questForUser = await _questForUserMapper.GetQuestForUser(newQuest, cancellationToken);
+            return new QuestData(questForUser);
+        }
+
+        private QuestData TryGetNotReadyQuestData(IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var questReadyDateTime = CalcQuestReadyDateTime(lastQuests.ToArray());
+            return questReadyDateTime > DateTimeOffset.Now ? new QuestData(questReadyDateTime) : null;
+        }
+
+        private async Task<QuestData> TryGetNotCompletedQuest(IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var notCompletedQuests = lastQuests.Where(q => q.Status == QuestStatus.Created);
+            if (notCompletedQuests.Any())
+            {
+                var lastNotCompletedQuest = notCompletedQuests.Last();
+                var lastQuestForUser = await _questForUserMapper.GetQuestForUser(lastNotCompletedQuest, cancellationToken);
+                return new QuestData(lastQuestForUser);
+            }
+
+            return null;
         }
 
         private DateTimeOffset CalcQuestReadyDateTime(Quest[] lastQuests)

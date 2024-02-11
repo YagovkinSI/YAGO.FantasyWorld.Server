@@ -4,9 +4,9 @@ using YAGO.FantasyWorld.Server.Domain.Enums;
 namespace YAGO.FantasyWorld.Server.Domain
 {
     /// <summary>
-    /// Данные квеста
+    /// Данные квеста для пользователя
     /// </summary>
-    public class Quest
+    public class QuestForUser
     {
         /// <summary>
         /// Идентификатор квеста
@@ -19,23 +19,19 @@ namespace YAGO.FantasyWorld.Server.Domain
         public long OrganizationId { get; set; }
 
         /// <summary>
-        /// Дата создания квеста
+        /// Текст квеста
         /// </summary>
-        public DateTimeOffset Created { get; set; }
+        public string QuestText { get; set; }
 
         /// <summary>
-        /// Тип евеста
+        /// Варианты решения
         /// </summary>
-        public QuestType Type { get; set; }
+        public string[] QuestOptions { get; set; }
 
         /// <summary>
-        /// Первая сущность квеста
+        /// Подробности вариантов решения
         /// </summary>
-        public long QuestEntity1Id { get; set; }
+        public string[] QuestOptionDescriptions { get; set; }
 
-        /// <summary>
-        /// Статус квеста
-        /// </summary>
-        public QuestStatus Status { get; set; }
     }
 }
