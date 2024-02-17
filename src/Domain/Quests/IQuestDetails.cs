@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 
-namespace YAGO.FantasyWorld.Server.Domain
+namespace YAGO.FantasyWorld.Server.Domain.Quests
 {
     /// <summary>
     /// Детали и обработка типа квеста
@@ -10,19 +10,14 @@ namespace YAGO.FantasyWorld.Server.Domain
     public interface IQuestDetails
     {
         /// <summary>
+        /// Данные квеста
+        /// </summary>
+        Quest Quest { get; }
+
+        /// <summary>
         /// Тип квеста
         /// </summary>
         QuestType Type { get; }
-
-        /// <summary>
-        /// Варианты решения квеста
-        /// </summary>
-        QuestOption[] Options { get; }
-
-        /// <summary>
-        /// Количество вариантов решения
-        /// </summary>
-        int CountOptions { get; }
 
         /// <summary>
         /// Получение квеста для пользователя
@@ -35,9 +30,9 @@ namespace YAGO.FantasyWorld.Server.Domain
         /// <summary>
         /// Обработать выбор решения квеста
         /// </summary>
-        /// <param name="questOptionIndex">индекс выбранного решения</param>
+        /// <param name="questOptionId">Идентификатор выбранного решения</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Результат квеста</returns>
-        Task<string> HandleQuestOption(int questOptionIndex, CancellationToken cancellationToken);
+        Task<string> HandleQuestOption(int questOptionId, CancellationToken cancellationToken);
     }
 }

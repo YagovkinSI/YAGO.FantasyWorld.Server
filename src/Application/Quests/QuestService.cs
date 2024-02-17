@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
-using YAGO.FantasyWorld.Server.Domain;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 using YAGO.FantasyWorld.Server.Domain.Exceptions;
+using YAGO.FantasyWorld.Server.Domain.Quests;
 using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
@@ -72,10 +72,10 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         /// </summary>
         /// <param name="claimsPrincipal">Ифнормация о пользователе запроса</param>
         /// <param name="questId">Идентификатор квеста</param>
-        /// <param name="questOptionIndex">Индекс выбранного варианта</param>
+        /// <param name="questOptionId">Идентификатор выбранного варианта</param>
         /// <param name="cancellationToken">ТОкен отмены</param>
         /// <returns>Результат квеста</returns>
-        public async Task<string> SetQuestOption(ClaimsPrincipal claimsPrincipal, long questId, int questOptionIndex, CancellationToken cancellationToken)
+        public async Task<string> SetQuestOption(ClaimsPrincipal claimsPrincipal, long questId, int questOptionId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var user = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
@@ -91,7 +91,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
                 throw new ApplicationException("Неверный статус квеста.");
 
             var questDatails = GetQuestDatails(quest);
-            return await questDatails.HandleQuestOption(questOptionIndex, cancellationToken);
+            return await questDatails.HandleQuestOption(questOptionId, cancellationToken);
         }
 
         private async Task<QuestData> GetNewQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
@@ -180,7 +180,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             return quest.Type switch
             {
                 QuestType.Unknown => throw new ApplicationException("Неизвестный тип квеста! Обратитесь к разработчику."),
-                QuestType.BaseQuest => new BaseQuest(_organizationService),
+                QuestType.BaseQuest => new BaseQuest(quest, _organizationService),
                 _ => throw new NotImplementedApplicationException(),
             };
         }

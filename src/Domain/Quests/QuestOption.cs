@@ -1,15 +1,18 @@
-﻿namespace YAGO.FantasyWorld.Server.Domain
+﻿namespace YAGO.FantasyWorld.Server.Domain.Quests
 {
     /// <summary>
     /// Вариант решения квеста
     /// </summary>
     public class QuestOption
     {
-        public QuestOption(string text, QuestOptionResult[] questOptionResults)
+        public QuestOption(int id, string text, QuestOptionResult[] questOptionResults)
         {
+            Id = id;
             Text = text;
             QuestOptionResults = questOptionResults;
         }
+
+        public int Id { get; }
 
         /// <summary>
         /// Описание решения

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Quests;
-using YAGO.FantasyWorld.Server.Domain;
+using YAGO.FantasyWorld.Server.Domain.Quests;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers
 {

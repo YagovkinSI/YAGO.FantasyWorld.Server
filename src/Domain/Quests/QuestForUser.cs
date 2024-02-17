@@ -1,7 +1,7 @@
 ﻿using System;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 
-namespace YAGO.FantasyWorld.Server.Domain
+namespace YAGO.FantasyWorld.Server.Domain.Quests
 {
     /// <summary>
     /// Данные квеста для пользователя
@@ -26,12 +26,7 @@ namespace YAGO.FantasyWorld.Server.Domain
         /// <summary>
         /// Варианты решения
         /// </summary>
-        public string[] QuestOptions { get; set; }
-
-        /// <summary>
-        /// Подробности вариантов решения
-        /// </summary>
-        public string[] QuestOptionDescriptions { get; set; }
+        public QuestOption[] QuestOptions { get; set; }
 
     }
 }

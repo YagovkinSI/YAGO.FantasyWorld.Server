@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace YAGO.FantasyWorld.Server.Domain
+namespace YAGO.FantasyWorld.Server.Domain.Quests
 {
     /// <summary>
     /// Результат решения квеста
     /// </summary>
     public class QuestOptionResult
     {
-        public QuestOptionResult(string text, int weight, Func<Task<string>> handle)
+        public QuestOptionResult(string text, int weight, QuestOptionResultEntity[] questOptionResultEntities)
         {
             Text = text;
             Weight = weight;
-            Handle = handle;
+            QuestOptionResultEntities = questOptionResultEntities;
         }
 
         /// <summary>
@@ -28,6 +28,6 @@ namespace YAGO.FantasyWorld.Server.Domain
         /// <summary>
         /// Обработка результата
         /// </summary>
-        public Func<Task<string>> Handle { get; }
+        public QuestOptionResultEntity[] QuestOptionResultEntities { get; }
     }
 }

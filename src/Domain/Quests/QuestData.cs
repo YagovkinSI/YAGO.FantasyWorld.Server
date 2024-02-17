@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YAGO.FantasyWorld.Server.Domain
+namespace YAGO.FantasyWorld.Server.Domain.Quests
 {
     /// <summary>
     /// Данные квеста

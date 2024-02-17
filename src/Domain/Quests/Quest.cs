@@ -1,7 +1,7 @@
 ﻿using System;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 
-namespace YAGO.FantasyWorld.Server.Domain
+namespace YAGO.FantasyWorld.Server.Domain.Quests
 {
     /// <summary>
     /// Данные квеста
