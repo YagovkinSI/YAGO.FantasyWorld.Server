@@ -44,229 +44,137 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         {
             return new QuestOption[]
             {
-                new (
-                    (int)BaseQuestOptionType.Neitral,
-                    "Сохранять нейтралитет и поддерживать мирные отношения.",
-                    new QuestOptionResult[]
-                    {
-                        new (
-                            "Благодаря сохранению нейтралитета и поддержанию мирных отношений, Вы сумели успешно развивать свои владения.",
-                            25,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 15)
-                                    }
-                                )
-                            }
-                        ),
-                        new (
-                            "Ваши усилия по развитию владений идут не так быстро, как Вы ожидали..",
-                            70,
-                            new QuestOptionResultEntity[] {}
-                        ),
-                        new (
-                            "Излишняя изоляция и отсутствие активных отношений приводят к небольшому падению Вашего могущества.",
-                            5,
-                            new QuestOptionResultEntity[]
-                            {
-                                new                                    (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, -5)
-                                    }
-                                )
-                            }
-                        ),
-                    }
-                ),
-                new (
-                    (int)BaseQuestOptionType.Friendly,
-                    "Искать взаимовыгодные сделки и укреплять экономическую связь.",
-                    new QuestOptionResult[]
-                    {
-                        new (
-                            "Укрепление экономической связи принесло Вам огромную прибыль, открывая новые возможности для развития владений.",
-                            10,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 24)
-                                    }
-                                ),
-                                new (
-                                    EntityType.Organization,
-                                    quest.QuestEntity1Id,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 12)
-                                    }
-                                )
-                            }
-                        ),
-                        new (
-                            "Сделка с партнером позволяет обоим сторонам получить значительные выгоды, способствуя процветанию владений.",
-                            35,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 8)
-                                    }
-                                ),
-                                new (
-                                    EntityType.Organization,
-                                    quest.QuestEntity1Id,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 8)
-                                    }
-                                )
-                            }
-                        ),
-                        new (
-                            "Не смотря на Ваши старания, соглашение о сотрудничестве не удалось достичь, оставляя Вас без значительных изменений в развитии Ваших владений.",
-                            30,
-                            new QuestOptionResultEntity[] { }
-                        ),
-                        new (
-                            "Ваша сделка оказалась менее выгодной, чем ожидалось, и принесла некоторые убытки.",
-                            20,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, -8)
-                                    }
-                                ),
-                                new (
-                                    EntityType.Organization,
-                                    quest.QuestEntity1Id,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 5)
-                                    }
-                                )
-                            }
-                        ),
-                        new (
-                            "Торговый караван был разграблен разбойниками, причинив Вам значительный ущерб.",
-                            5,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, -24)
-                                    }
-                                ),
-                            }
-                        ),
-                    }
-                ),
-                new (
-                    (int)BaseQuestOptionType.Agressive,
-                    "Организовать набег с целью наживы и увеличения могущества.",
-                    new QuestOptionResult[]
-                    {
-                        new (
-                            "Набег получился крайне успешным, вы возвращаетесь домой с огромной добычей.",
-                            5,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 120)
-                                    }
-                                ),
-                                new (
-                                    EntityType.Organization,
-                                    quest.QuestEntity1Id,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, -70)
-                                    }
-                                )
-                            }
-                        ),
-                        new (
-                            "Набег прошёл успешно, добыча явно покроет все затраты на организацию набега.",
-                            50,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, 40)
-                                    }
-                                ),
-                                new (
-                                    EntityType.Organization,
-                                    quest.QuestEntity1Id,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, -20)
-                                    }
-                                )
-                            }
-                        ),
-                        new (
-                            "Набег не увенчался успехом, понеся некоторые потери вы вернулись домой почти с пустыми руками.",
-                            40,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, -40)
-                                    }
-                                )
-                            }
-                        ),
-                        new (
-                            "Это была ужасная идея, отряд попал в засаду и понёс ужасные потери.",
-                            5,
-                            new QuestOptionResultEntity[]
-                            {
-                                new (
-                                    EntityType.Organization,
-                                    quest.OrganizationId,
-                                    new QuestOptionResultEntityParameter[]
-                                    {
-                                        new(Domain.EntityParametres.OrganizationPower, -120)
-                                    }
-                                )
-                            }
-                        )
-                    }
-                ),
+                GetNeitralOption(quest),
+                GetFriendlyOption(quest),
+                GetAgressiveOption(quest),
             };
         }
+
+        private static QuestOption GetNeitralOption(Quest quest)
+        {
+            return new(
+                (int)BaseQuestOptionType.Neitral,
+                "Сохранять нейтралитет и поддерживать мирные отношения.",
+                new QuestOptionResult[]
+                {
+                    new (
+                        "Благодаря сохранению нейтралитета и поддержанию мирных отношений, Вы сумели успешно развивать свои владения.",
+                        25,
+                        new[] { CreateChangeOrganization(quest.OrganizationId, 15) }
+                    ),
+                    new (
+                        "Ваши усилия по развитию владений идут не так быстро, как Вы ожидали..",
+                        70,
+                        Array.Empty<QuestOptionResultEntity>()
+                    ),
+                    new (
+                        "Излишняя изоляция и отсутствие активных отношений приводят к небольшому падению Вашего могущества.",
+                        5,
+                        new[] { CreateChangeOrganization(quest.OrganizationId, -5) }
+                    )
+                }
+            );
+        }
+
+        private static QuestOption GetFriendlyOption(Quest quest)
+        {
+            return new(
+                (int)BaseQuestOptionType.Friendly,
+                "Искать взаимовыгодные сделки и укреплять экономическую связь.",
+                new QuestOptionResult[]
+                {
+                    new (
+                        "Укрепление экономической связи принесло Вам огромную прибыль, открывая новые возможности для развития владений.",
+                        10,
+                        new[] {
+                            CreateChangeOrganization(quest.OrganizationId, 24),
+                            CreateChangeOrganization(quest.QuestEntity1Id, 12)
+                        }
+                    ),
+                    new (
+                        "Сделка с партнером позволяет обоим сторонам получить значительные выгоды, способствуя процветанию владений.",
+                        35,
+                        new[] {
+                            CreateChangeOrganization(quest.OrganizationId, 8),
+                            CreateChangeOrganization(quest.QuestEntity1Id, 8)
+                        }
+                    ),
+                    new (
+                        "Не смотря на Ваши старания, соглашение о сотрудничестве не удалось достичь, оставляя Вас без значительных изменений в развитии Ваших владений.",
+                        30,
+                        Array.Empty<QuestOptionResultEntity>()
+                    ),
+                    new (
+                        "Ваша сделка оказалась менее выгодной, чем ожидалось, и принесла некоторые убытки.",
+                        20,
+                        new[] {
+                            CreateChangeOrganization(quest.OrganizationId, -8),
+                            CreateChangeOrganization(quest.QuestEntity1Id, 5)
+                        }
+                    ),
+                    new (
+                        "Торговый караван был разграблен разбойниками, причинив Вам значительный ущерб.",
+                        5,
+                        new[] { CreateChangeOrganization(quest.OrganizationId, -24) }
+                    )
+                }
+            );
+        }
+
+        private static QuestOption GetAgressiveOption(Quest quest)
+        {
+            return new(
+                (int)BaseQuestOptionType.Agressive,
+                "Организовать набег с целью наживы и увеличения могущества.",
+                new QuestOptionResult[]
+                {
+                    new (
+                        "Набег получился крайне успешным, вы возвращаетесь домой с огромной добычей.",
+                        5,
+                        new[] {
+                            CreateChangeOrganization(quest.OrganizationId, 120),
+                            CreateChangeOrganization(quest.QuestEntity1Id, -70)
+                        }
+                    ),
+                    new (
+                        "Набег прошёл успешно, добыча явно покроет все затраты на организацию набега.",
+                        50,
+                        new[] {
+                            CreateChangeOrganization(quest.OrganizationId, 40),
+                            CreateChangeOrganization(quest.QuestEntity1Id, -20)
+                        }
+                    ),
+                    new (
+                        "Набег не увенчался успехом, понеся некоторые потери вы вернулись домой почти с пустыми руками.",
+                        40,
+                        new[] {
+                            CreateChangeOrganization(quest.OrganizationId, -40)
+                        }
+                    ),
+                    new (
+                        "Это была ужасная идея, отряд попал в засаду и понёс ужасные потери.",
+                        5,
+                        new[] {
+                            CreateChangeOrganization(quest.OrganizationId, -120)
+                        }
+                    )
+                }
+            );
+        }
+
+        private static QuestOptionResultEntity CreateChangeOrganization(long organizationId, int changeParameter)
+        {
+            return new QuestOptionResultEntity
+            (
+                EntityType.Organization,
+                organizationId,
+                new QuestOptionResultEntityParameter[]
+                {
+                    new(Domain.EntityParametres.OrganizationPower, changeParameter)
+                }
+            );
+        }
+
 
         public Task<QuestOptionResult> HandleQuestOption(int questOptionId, CancellationToken cancellationToken)
         {
