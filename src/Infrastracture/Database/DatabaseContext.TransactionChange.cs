@@ -10,7 +10,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
     public partial class DatabaseContext : IDatabaseTransactionChangeService
     {
         public async Task HandleTransactionChange(
-            QuestOptionResultEntity[] questOptionResultEntities, 
+            QuestOptionResultEntity[] questOptionResultEntities,
             long questId,
             CancellationToken cancellationToken)
         {
