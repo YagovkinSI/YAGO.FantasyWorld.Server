@@ -8,6 +8,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
     {
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<DataUpdate> DataUpdates { get; set; }
+        public DbSet<Quest> Quests { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
                : base(options)
