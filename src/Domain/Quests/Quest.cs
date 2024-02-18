@@ -24,7 +24,7 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         public DateTimeOffset Created { get; set; }
 
         /// <summary>
-        /// Тип евеста
+        /// Тип квеста
         /// </summary>
         public QuestType Type { get; set; }
 

@@ -17,7 +17,7 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         }
 
         /// <summary>
-        /// Тип суoности
+        /// Тип сущности
         /// </summary>
         public EntityType EntityType { get; set; }
 

@@ -33,7 +33,6 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             return quest.ToDomain();
         }
 
-
         public async Task<IEnumerable<Quest>> GetLastQuestes(long organizationId, int count, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

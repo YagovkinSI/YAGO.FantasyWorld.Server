@@ -26,7 +26,7 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         public int Weight { get; }
 
         /// <summary>
-        /// Обработка результата
+        /// Изменения параметров сущностей по результатам
         /// </summary>
         public QuestOptionResultEntity[] QuestOptionResultEntities { get; }
     }
