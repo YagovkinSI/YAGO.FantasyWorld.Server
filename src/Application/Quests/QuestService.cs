@@ -142,6 +142,8 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
                 var currentQuestReadyDateTime = lastQuests[i].Created + QUEST_TIMEOUTS[i];
                 if (currentQuestReadyDateTime < questReadyDateTime)
                     questReadyDateTime = currentQuestReadyDateTime;
+                if (currentQuestReadyDateTime < DateTimeOffset.Now)
+                    break;
             }
 
             return questReadyDateTime;
