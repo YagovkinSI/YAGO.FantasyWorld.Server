@@ -5,7 +5,13 @@
     /// </summary>
     public class QuestOptionResultEntityParameter
     {
-        public QuestOptionResultEntityParameter(EntityParametres entityParameter, long change)
+        public QuestOptionResultEntityParameter(EntityParametres entityParameter, double change)
+        {
+            EntityParameter = entityParameter;
+            Change = change.ToString();
+        }
+
+        public QuestOptionResultEntityParameter(EntityParametres entityParameter, string change)
         {
             EntityParameter = entityParameter;
             Change = change;
@@ -19,6 +25,6 @@
         /// <summary>
         /// Изменение параметра
         /// </summary>
-        public long Change { get; set; }
+        public string Change { get; set; }
     }
 }

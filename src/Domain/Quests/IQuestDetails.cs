@@ -33,6 +33,6 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         /// <param name="questOptionId">Идентификатор выбранного решения</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Результат квеста</returns>
-        Task<string> HandleQuestOption(int questOptionId, CancellationToken cancellationToken);
+        Task<QuestOptionResult> HandleQuestOption(int questOptionId, CancellationToken cancellationToken);
     }
 }

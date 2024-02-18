@@ -167,7 +167,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
                         ),
                         new (
                             "Торговый караван был разграблен разбойниками, причинив Вам значительный ущерб.",
-                            20,
+                            5,
                             new QuestOptionResultEntity[]
                             {
                                 new (
@@ -268,7 +268,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
             };
         }
 
-        public Task<string> HandleQuestOption(int questOptionId, CancellationToken cancellationToken)
+        public Task<QuestOptionResult> HandleQuestOption(int questOptionId, CancellationToken cancellationToken)
         {
             var options = GetQuestOptions(Quest);
             var option = options.SingleOrDefault(o => o.Id == questOptionId);
@@ -278,15 +278,16 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
             var sumWeight = option.QuestOptionResults.Sum(r => r.Weight);
             var random = new Random().Next(1, sumWeight);
 
-            var result = option.QuestOptionResults[0];
+            QuestOptionResult result = null;
             var index = 0;
             while (random > 0)
             {
                 result = option.QuestOptionResults[index];
                 random -= result.Weight;
+                index++;
             }
 
-            return Task.FromResult($"Резульат: {result.Text} В разработке.");
+            return Task.FromResult(result);
         }
     }
 }

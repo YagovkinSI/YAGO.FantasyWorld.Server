@@ -21,7 +21,8 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                 .AddScoped<IUserDatabaseService, DatabaseContext>()
                 .AddScoped<IOrganizationDatabaseService, DatabaseContext>()
                 .AddScoped<IFillDatabaseService, DatabaseContext>()
-                .AddScoped<IQuestDatabaseService, DatabaseContext>();
+                .AddScoped<IQuestDatabaseService, DatabaseContext>()
+                .AddScoped<IDatabaseTransactionChangeService, DatabaseContext>();
 
             return services;
         }

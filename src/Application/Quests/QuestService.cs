@@ -21,6 +21,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly IQuestDatabaseService _questDatabaseService;
+        private readonly IDatabaseTransactionChangeService _databaseTransactionChangeService;
         private readonly OrganizationService _organizationService;
 
         private readonly Random _random = new();
@@ -39,11 +40,13 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
 
         public QuestService(IAuthorizationService authorizationService,
             IQuestDatabaseService questDatabaseService,
-            OrganizationService organizationService)
+            OrganizationService organizationService,
+            IDatabaseTransactionChangeService databaseTransactionChangeService)
         {
             _authorizationService = authorizationService;
             _questDatabaseService = questDatabaseService;
             _organizationService = organizationService;
+            _databaseTransactionChangeService = databaseTransactionChangeService;
         }
 
         /// <summary>
@@ -91,7 +94,9 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
                 throw new ApplicationException("Неверный статус квеста.");
 
             var questDatails = GetQuestDatails(quest);
-            return await questDatails.HandleQuestOption(questOptionId, cancellationToken);
+            var result = await questDatails.HandleQuestOption(questOptionId, cancellationToken);
+            await _databaseTransactionChangeService.HandleTransactionChange(result.QuestOptionResultEntities, quest.Id, cancellationToken);
+            return $"{result.Text}";
         }
 
         private async Task<QuestData> GetNewQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
