@@ -20,12 +20,12 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         /// <summary>
         /// Данные квеста
         /// </summary>
-        public QuestForUser Quest { get; set; }
+        public QuestWithDetails QuestWithDetails { get; set; }
 
-        public QuestData(QuestForUser quest)
+        public QuestData(QuestWithDetails quest)
         {
             IsQuestReady = true;
-            Quest = quest;
+            QuestWithDetails = quest;
         }
 
         public QuestData(DateTimeOffset questReadyDateTime)

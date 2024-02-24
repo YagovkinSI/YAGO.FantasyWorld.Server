@@ -11,12 +11,6 @@
             Change = change.ToString();
         }
 
-        public QuestOptionResultEntityParameter(EntityParametres entityParameter, string change)
-        {
-            EntityParameter = entityParameter;
-            Change = change;
-        }
-
         /// <summary>
         /// Параметр сущности
         /// </summary>

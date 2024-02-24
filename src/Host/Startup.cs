@@ -44,7 +44,8 @@ namespace YAGO.FantasyWorld.Server.Host
             services.AddScoped<OrganizationService>();
             services.AddScoped<AdminService>();
             services.AddScoped<UserService>();
-            services.AddScoped<QuestService>();
+            services.AddScoped<QuestService>(); 
+            services.AddScoped<QuestGenerator>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

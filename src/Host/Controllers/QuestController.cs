@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Quests;
 using YAGO.FantasyWorld.Server.Domain.Quests;
+using YAGO.FantasyWorld.Server.Host.Models.Quest;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers
 {
@@ -27,10 +28,10 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
 
         [HttpPost]
         [Route("setQuestOption")]
-        public async Task<string> SetQuestOption(long questId, int questOptionIndex, CancellationToken cancellationToken)
+        public async Task<string> SetQuestOption(SetQuestOptionRequest setQuestOptionRequest, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return await _questService.SetQuestOption(HttpContext.User, questId, questOptionIndex, cancellationToken);
+            return await _questService.SetQuestOption(HttpContext.User, setQuestOptionRequest.QuestId, setQuestOptionRequest.QuestOptionId, cancellationToken);
         }
     }
 }
