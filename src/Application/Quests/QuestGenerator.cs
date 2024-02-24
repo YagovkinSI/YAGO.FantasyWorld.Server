@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
@@ -18,7 +17,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
 
         private readonly Random _random = new();
 
-        public QuestGenerator(IQuestDatabaseService questDatabaseService, 
+        public QuestGenerator(IQuestDatabaseService questDatabaseService,
             OrganizationService organizationService)
         {
             _questDatabaseService = questDatabaseService;

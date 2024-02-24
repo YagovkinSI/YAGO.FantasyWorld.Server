@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using System;
 using YAGO.FantasyWorld.Server.Application.Admin;
 using YAGO.FantasyWorld.Server.Application.Authorization;
 using YAGO.FantasyWorld.Server.Application.Organizations;
@@ -44,7 +43,7 @@ namespace YAGO.FantasyWorld.Server.Host
             services.AddScoped<OrganizationService>();
             services.AddScoped<AdminService>();
             services.AddScoped<UserService>();
-            services.AddScoped<QuestService>(); 
+            services.AddScoped<QuestService>();
             services.AddScoped<QuestGenerator>();
         }
 
