@@ -12,6 +12,9 @@
             QuestOptionResults = questOptionResults;
         }
 
+        /// <summary>
+        /// Идентификатор опции квеста
+        /// </summary>
         public int Id { get; }
 
         /// <summary>

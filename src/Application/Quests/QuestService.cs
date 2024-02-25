@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Application.History;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
@@ -23,32 +24,25 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         private readonly IQuestDatabaseService _questDatabaseService;
         private readonly IDatabaseTransactionChangeService _databaseTransactionChangeService;
         private readonly OrganizationService _organizationService;
-
+        private readonly HistoryService _historyService;
+        private readonly QuestReadinessService _questReadinessService;
         private readonly QuestGenerator _questGenerator;
-
-
-        private readonly TimeSpan[] QUEST_TIMEOUTS = new[]
-        {
-            TimeSpan.FromMinutes(2),
-            TimeSpan.FromMinutes(5),
-            TimeSpan.FromMinutes(10),
-            TimeSpan.FromMinutes(20),
-            TimeSpan.FromMinutes(40),
-            TimeSpan.FromMinutes(90),
-            TimeSpan.FromHours(3)
-        };
 
         public QuestService(IAuthorizationService authorizationService,
             IQuestDatabaseService questDatabaseService,
             OrganizationService organizationService,
             IDatabaseTransactionChangeService databaseTransactionChangeService,
-            QuestGenerator questGenerator)
+            QuestGenerator questGenerator,
+            HistoryService historyService,
+            QuestReadinessService questReadinessService)
         {
             _authorizationService = authorizationService;
             _questDatabaseService = questDatabaseService;
             _organizationService = organizationService;
             _databaseTransactionChangeService = databaseTransactionChangeService;
             _questGenerator = questGenerator;
+            _historyService = historyService;
+            _questReadinessService = questReadinessService;
         }
 
         /// <summary>
@@ -66,7 +60,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             if (user.User.OrganizationId == null)
                 throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
 
-            var lastQuests = await _questDatabaseService.GetLastQuestes(user.User.OrganizationId.Value, QUEST_TIMEOUTS.Length, cancellationToken);
+            var lastQuests = await _questDatabaseService.GetLastQuestes(user.User.OrganizationId.Value, _questReadinessService.QuestTimeoutCount, cancellationToken);
             return await TryGetNotCompletedQuest(lastQuests, cancellationToken)
                 ?? TryGetNotReadyQuestData(lastQuests, cancellationToken)
                 ?? await GetNewQuest(user.User.OrganizationId.Value, lastQuests, cancellationToken);
@@ -105,7 +99,10 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
 
             var questDatails = GetQuestDatails(quest);
             var result = await questDatails.HandleQuestOption(questOptionId, cancellationToken);
-            await _databaseTransactionChangeService.HandleTransactionChange(result.QuestOptionResultEntities, quest.Id, cancellationToken);
+
+            var historyEvent = await _historyService.CreateHistoryEvent(quest, questOptionId, result, cancellationToken);
+
+            await _databaseTransactionChangeService.HandleTransactionChange(historyEvent, quest.Id, cancellationToken);
             return GetResultText(result, quest.OrganizationId);
         }
 
@@ -141,7 +138,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         private QuestData TryGetNotReadyQuestData(IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var questReadyDateTime = CalcQuestReadyDateTime(lastQuests.ToArray());
+            var questReadyDateTime = _questReadinessService.CalcQuestReadyDateTime(lastQuests.ToArray());
             return questReadyDateTime > DateTimeOffset.Now ? new QuestData(questReadyDateTime) : null;
         }
 
@@ -157,24 +154,6 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             }
 
             return null;
-        }
-
-        private DateTimeOffset CalcQuestReadyDateTime(Quest[] lastQuests)
-        {
-            if (lastQuests.Length < QUEST_TIMEOUTS.Length)
-                return DateTimeOffset.MinValue;
-
-            var questReadyDateTime = DateTimeOffset.Now + QUEST_TIMEOUTS[0];
-            for (var i = 0; i < QUEST_TIMEOUTS.Length; i++)
-            {
-                var currentQuestReadyDateTime = lastQuests[i].Created + QUEST_TIMEOUTS[i];
-                if (currentQuestReadyDateTime < questReadyDateTime)
-                    questReadyDateTime = currentQuestReadyDateTime;
-                if (currentQuestReadyDateTime < DateTimeOffset.Now)
-                    break;
-            }
-
-            return questReadyDateTime;
         }
 
         private IQuestDetailsProvider GetQuestDatails(Quest quest)
