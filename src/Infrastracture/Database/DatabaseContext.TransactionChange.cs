@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using Newtonsoft.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Domain;
+using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
 using YAGO.FantasyWorld.Server.Domain.Quests;
 using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
 
@@ -10,7 +12,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
     public partial class DatabaseContext : IDatabaseTransactionChangeService
     {
         public async Task HandleTransactionChange(
-            QuestOptionResultEntity[] questOptionResultEntities,
+            HistoryEvent historyEvent,
             long questId,
             CancellationToken cancellationToken)
         {
@@ -18,11 +20,12 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             var quest = Quests.Find(questId);
             quest.Status = Domain.Enums.QuestStatus.Completed;
 
-            cancellationToken.ThrowIfCancellationRequested();
-            foreach (var entity in questOptionResultEntities)
+            foreach (var entity in historyEvent.ParameterChanges)
             {
                 await HandleChageEntity(entity, cancellationToken);
             }
+
+            await CreateHistoryEvent(historyEvent, cancellationToken);
 
             cancellationToken.ThrowIfCancellationRequested();
             await SaveChangesAsync(cancellationToken);
@@ -56,6 +59,33 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                     _ => throw new ApplicationException("Неизвестный тип параметра организации для изменения"),
                 };
             }
+            return Task.CompletedTask;
+        }
+
+        private Task CreateHistoryEvent(HistoryEvent historyEvent, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var historyEventDatabase = new Models.HistoryEvent
+            {
+                DateTimeUtc = historyEvent.DateTimeUtc,
+                Type = historyEvent.Type,
+                HistoryEventEntities = JsonConvert.SerializeObject(historyEvent.HistoryEventEntities),
+                ParameterChanges = JsonConvert.SerializeObject(historyEvent.ParameterChanges)
+            };
+            HistoryEvents.Add(historyEventDatabase);
+
+            foreach (var entityWeight in historyEvent.EntityWeights)
+            {
+                var entityWeightDatabase = new Models.HistoryEventEntityWeight
+                {
+                    HistoryEvent = historyEventDatabase,
+                    EntityType = entityWeight.EntityType,
+                    EntityId = entityWeight.EntityId,
+                    Weight = entityWeight.Weight
+                };
+                HistoryEventEntityWeights.Add(entityWeightDatabase);
+            }
+
             return Task.CompletedTask;
         }
     }

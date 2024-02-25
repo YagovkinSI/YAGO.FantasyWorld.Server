@@ -1,4 +1,5 @@
-﻿using YAGO.FantasyWorld.Server.Domain.Quests;
+﻿using YAGO.FantasyWorld.Server.Domain.Enums;
+using YAGO.FantasyWorld.Server.Domain.Quests;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 {
@@ -11,7 +12,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
                 "Организовать набег с целью наживы и увеличения могущества.",
                 new QuestOptionResult[]
                 {
-                    GetAgressiveResult1(5,quest),
+                    GetAgressiveResult1(5, quest),
                     GetAgressiveResult2(50, quest),
                     GetAgressiveResult3(40, quest),
                     GetAgressiveResult4(5, quest)
@@ -22,6 +23,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         private static QuestOptionResult GetAgressiveResult1(int weight, Quest quest)
         {
             return new(
+                QuestOptionResultType.CriticalSuccess,
                 "Набег получился крайне успешным, вы возвращаетесь домой с огромной добычей.",
                 weight,
                 new[] {
@@ -34,6 +36,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         private static QuestOptionResult GetAgressiveResult2(int weight, Quest quest)
         {
             return new(
+                QuestOptionResultType.Success,
                 "Набег прошёл успешно, добыча явно покроет все затраты на организацию набега.",
                 weight,
                 new[] {
@@ -46,6 +49,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         private static QuestOptionResult GetAgressiveResult3(int weight, Quest quest)
         {
             return new(
+                QuestOptionResultType.Fail,
                 "Набег не увенчался успехом, понеся некоторые потери вы вернулись домой почти с пустыми руками.",
                 weight,
                 new[] {
@@ -57,6 +61,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         private static QuestOptionResult GetAgressiveResult4(int weight, Quest quest)
         {
             return new(
+                QuestOptionResultType.CriticalFail,
                 "Это была ужасная идея, отряд попал в засаду и понёс ужасные потери.",
                 weight,
                 new[] {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Application.History;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
@@ -23,30 +24,25 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         private readonly IQuestDatabaseService _questDatabaseService;
         private readonly IDatabaseTransactionChangeService _databaseTransactionChangeService;
         private readonly OrganizationService _organizationService;
-
-        private readonly Random _random = new();
-
-        private readonly TimeSpan[] QUEST_TIMEOUTS = new[]
-        {
-            TimeSpan.FromMinutes(2),
-            TimeSpan.FromMinutes(5),
-            TimeSpan.FromMinutes(10),
-            TimeSpan.FromMinutes(20),
-            TimeSpan.FromMinutes(40),
-            TimeSpan.FromMinutes(90),
-            TimeSpan.FromHours(3)
-        };
-
+        private readonly HistoryService _historyService;
+        private readonly QuestReadinessService _questReadinessService;
+        private readonly QuestGenerator _questGenerator;
 
         public QuestService(IAuthorizationService authorizationService,
             IQuestDatabaseService questDatabaseService,
             OrganizationService organizationService,
-            IDatabaseTransactionChangeService databaseTransactionChangeService)
+            IDatabaseTransactionChangeService databaseTransactionChangeService,
+            QuestGenerator questGenerator,
+            HistoryService historyService,
+            QuestReadinessService questReadinessService)
         {
             _authorizationService = authorizationService;
             _questDatabaseService = questDatabaseService;
             _organizationService = organizationService;
             _databaseTransactionChangeService = databaseTransactionChangeService;
+            _questGenerator = questGenerator;
+            _historyService = historyService;
+            _questReadinessService = questReadinessService;
         }
 
         /// <summary>
@@ -64,10 +60,18 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             if (user.User.OrganizationId == null)
                 throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
 
-            var lastQuests = await _questDatabaseService.GetLastQuestes(user.User.OrganizationId.Value, QUEST_TIMEOUTS.Length, cancellationToken);
+            var lastQuests = await _questDatabaseService.GetLastQuestes(user.User.OrganizationId.Value, _questReadinessService.QuestTimeoutCount, cancellationToken);
             return await TryGetNotCompletedQuest(lastQuests, cancellationToken)
                 ?? TryGetNotReadyQuestData(lastQuests, cancellationToken)
                 ?? await GetNewQuest(user.User.OrganizationId.Value, lastQuests, cancellationToken);
+        }
+
+        private async Task<QuestData> GetNewQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var quest = await _questGenerator.GenerateQuest(organizationId, lastQuests, cancellationToken);
+            var questWithDetails = await GetQuestWithDetails(quest, cancellationToken);
+            return new QuestData(questWithDetails);
         }
 
         /// <summary>
@@ -95,25 +99,46 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
 
             var questDatails = GetQuestDatails(quest);
             var result = await questDatails.HandleQuestOption(questOptionId, cancellationToken);
-            await _databaseTransactionChangeService.HandleTransactionChange(result.QuestOptionResultEntities, quest.Id, cancellationToken);
-            return $"{result.Text}";
+
+            var historyEvent = await _historyService.CreateHistoryEvent(quest, questOptionId, result, cancellationToken);
+
+            await _databaseTransactionChangeService.HandleTransactionChange(historyEvent, quest.Id, cancellationToken);
+            return GetResultText(result, quest.OrganizationId);
         }
 
-        private async Task<QuestData> GetNewQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
+        private string GetResultText(QuestOptionResult questOptionResult, long organizationId)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            var newQuest = await GenerateNewQuest(organizationId, lastQuests, cancellationToken);
+            var mainText = questOptionResult.Text;
 
-            cancellationToken.ThrowIfCancellationRequested();
-            newQuest = await _questDatabaseService.CreateQuest(newQuest, cancellationToken);
-            var questForUser = await GetQuestForUser(newQuest, cancellationToken);
-            return new QuestData(questForUser);
+            var organizationResult = questOptionResult.QuestOptionResultEntities
+                .SingleOrDefault(r => r.EntityType == EntityType.Organization && r.EntityId == organizationId)
+                ?.QuestOptionResultEntityParameters.SingleOrDefault(r => r.EntityParameter == Domain.EntityParametres.OrganizationPower)
+                ?.Change;
+            var organizationResultInt = organizationResult == null ? 0 : int.Parse(organizationResult);
+            var organizationResultText = organizationResultInt != 0
+                ? organizationResultInt >= 0
+                    ? $"Ваше могущество увеличилсось на {organizationResultInt}"
+                    : $"Ваше могущество уменьшилось на {-organizationResultInt}"
+                : "Ваше могущество не изменилось";
+
+            var oponnentResult = questOptionResult.QuestOptionResultEntities
+                .SingleOrDefault(r => r.EntityType == EntityType.Organization && r.EntityId != organizationId)
+                ?.QuestOptionResultEntityParameters.SingleOrDefault(r => r.EntityParameter == Domain.EntityParametres.OrganizationPower)
+                ?.Change;
+            var oponnentResultInt = oponnentResult == null ? 0 : int.Parse(oponnentResult);
+            var oponnentResultText = oponnentResultInt != 0
+                ? oponnentResultInt >= 0
+                    ? $"Могущество оппонента увеличилсось на {oponnentResultInt}"
+                    : $"Могущество оппонента уменьшилось на {-oponnentResultInt}"
+                : string.Empty;
+
+            return $"{mainText}\r\n{organizationResultText}{(string.IsNullOrEmpty(oponnentResultText) ? string.Empty : $"\r\n{oponnentResultText}")}";
         }
 
         private QuestData TryGetNotReadyQuestData(IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var questReadyDateTime = CalcQuestReadyDateTime(lastQuests.ToArray());
+            var questReadyDateTime = _questReadinessService.CalcQuestReadyDateTime(lastQuests.ToArray());
             return questReadyDateTime > DateTimeOffset.Now ? new QuestData(questReadyDateTime) : null;
         }
 
@@ -124,65 +149,14 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             if (notCompletedQuests.Any())
             {
                 var lastNotCompletedQuest = notCompletedQuests.Last();
-                var lastQuestForUser = await GetQuestForUser(lastNotCompletedQuest, cancellationToken);
+                var lastQuestForUser = await GetQuestWithDetails(lastNotCompletedQuest, cancellationToken);
                 return new QuestData(lastQuestForUser);
             }
 
             return null;
         }
 
-        private DateTimeOffset CalcQuestReadyDateTime(Quest[] lastQuests)
-        {
-            if (lastQuests.Length < QUEST_TIMEOUTS.Length)
-                return DateTimeOffset.MinValue;
-
-            var questReadyDateTime = DateTimeOffset.Now + QUEST_TIMEOUTS[0];
-            for (var i = 0; i < QUEST_TIMEOUTS.Length; i++)
-            {
-                var currentQuestReadyDateTime = lastQuests[i].Created + QUEST_TIMEOUTS[i];
-                if (currentQuestReadyDateTime < questReadyDateTime)
-                    questReadyDateTime = currentQuestReadyDateTime;
-                if (currentQuestReadyDateTime < DateTimeOffset.Now)
-                    break;
-            }
-
-            return questReadyDateTime;
-        }
-
-        private async Task<Quest> GenerateNewQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            return await GenarateBaseQuest(organizationId, lastQuests, cancellationToken);
-        }
-
-        private async Task<Quest> GenarateBaseQuest(long organizationId, IEnumerable<Quest> lastQuests, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            var organizations = await _organizationService.GetOrganizations(cancellationToken);
-
-            cancellationToken.ThrowIfCancellationRequested();
-            var organizationsForQuest = organizations
-                .Where(o => o.Id != organizationId)
-                .Where(o => lastQuests.All(q => q.Type != QuestType.BaseQuest || q.QuestEntity1Id != o.Id))
-                .ToArray();
-
-            var index = _random.Next(0, organizationsForQuest.Count() - 1);
-            return CreateNewBaseQuest(organizationId, organizationsForQuest[index].Id);
-        }
-
-        private static Quest CreateNewBaseQuest(long organizationId, long questEntity1Id)
-        {
-            return new Quest
-            {
-                OrganizationId = organizationId,
-                Created = DateTimeOffset.Now,
-                Type = QuestType.BaseQuest,
-                QuestEntity1Id = questEntity1Id,
-                Status = QuestStatus.Created
-            };
-        }
-
-        private IQuestDetails GetQuestDatails(Quest quest)
+        private IQuestDetailsProvider GetQuestDatails(Quest quest)
         {
             return quest.Type switch
             {
@@ -192,11 +166,12 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             };
         }
 
-        private async Task<QuestForUser> GetQuestForUser(Quest quest, CancellationToken cancellationToken)
+        private async Task<QuestWithDetails> GetQuestWithDetails(Quest quest, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var questDetails = GetQuestDatails(quest);
-            return await questDetails.GetQuestForUser(quest, cancellationToken);
+            var questProvider = GetQuestDatails(quest);
+            var questDetails = await questProvider.GetQuestForUser(quest, cancellationToken);
+            return new QuestWithDetails(quest, questDetails);
         }
     }
 }

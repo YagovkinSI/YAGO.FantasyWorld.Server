@@ -1,4 +1,5 @@
 ﻿using System;
+using YAGO.FantasyWorld.Server.Domain.Enums;
 using YAGO.FantasyWorld.Server.Domain.Quests;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
@@ -22,6 +23,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         private static QuestOptionResult GetNeitralResult1(int weight, Quest quest)
         {
             return new(
+                QuestOptionResultType.CriticalSuccess,
                 "Благодаря сохранению нейтралитета и поддержанию мирных отношений, Вы сумели успешно развивать свои владения.",
                 weight,
                 new[] { CreateChangeOrganization(quest.OrganizationId, 15) }
@@ -31,6 +33,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         private static QuestOptionResult GetNeitralResult2(int weight)
         {
             return new(
+                QuestOptionResultType.Neitral,
                 "Ваши усилия по развитию владений идут не так быстро, как Вы ожидали.",
                 weight,
                 Array.Empty<QuestOptionResultEntity>()
@@ -40,6 +43,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
         private static QuestOptionResult GetNeitralResult3(int weight, Quest quest)
         {
             return new(
+                QuestOptionResultType.Fail,
                 "Излишняя изоляция и отсутствие активных отношений приводят к небольшому падению Вашего могущества.",
                 weight,
                 new[] { CreateChangeOrganization(quest.OrganizationId, -5) }

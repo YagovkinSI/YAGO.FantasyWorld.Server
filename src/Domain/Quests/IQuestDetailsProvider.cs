@@ -5,9 +5,9 @@ using YAGO.FantasyWorld.Server.Domain.Enums;
 namespace YAGO.FantasyWorld.Server.Domain.Quests
 {
     /// <summary>
-    /// Детали и обработка типа квеста
+    /// Провайдер деталей квеста
     /// </summary>
-    public interface IQuestDetails
+    public interface IQuestDetailsProvider
     {
         /// <summary>
         /// Данные квеста
@@ -20,12 +20,12 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         QuestType Type { get; }
 
         /// <summary>
-        /// Получение квеста для пользователя
+        /// Получение деталей квеста
         /// </summary>
         /// <param name="quest">Квест</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Квест для пользователя</returns>
-        Task<QuestForUser> GetQuestForUser(Quest quest, CancellationToken cancellationToken);
+        Task<QuestDetails> GetQuestForUser(Quest quest, CancellationToken cancellationToken);
 
         /// <summary>
         /// Обработать выбор решения квеста

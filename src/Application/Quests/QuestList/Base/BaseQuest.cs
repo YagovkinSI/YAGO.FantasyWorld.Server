@@ -9,7 +9,7 @@ using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.Applicat
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 {
-    internal partial class BaseQuest : IQuestDetails
+    internal partial class BaseQuest : IQuestDetailsProvider
     {
         private readonly OrganizationService _organizationService;
 
@@ -23,15 +23,13 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 
         public QuestType Type => QuestType.BaseQuest;
 
-        public async Task<QuestForUser> GetQuestForUser(Quest quest, CancellationToken cancellationToken)
+        public async Task<QuestDetails> GetQuestForUser(Quest quest, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organizationOpponent = await _organizationService.FindOrganization(quest.QuestEntity1Id, cancellationToken);
 
-            return new QuestForUser
+            return new QuestDetails
             {
-                Id = quest.Id,
-                OrganizationId = quest.OrganizationId,
                 QuestText = $"Совет собрался, чтобы обсудить отношения с областью {organizationOpponent.Name}. " +
                     $"Некоторые члены совета предлагают сохранять нейтралитет и поддерживать мирные отношения. " +
                     $"Другие советуют искать взаимовыгодные сделки и укреплять экономическую связь. " +
@@ -68,7 +66,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
             {
                 GetNeitralOption(quest),
                 GetFriendlyOption(quest),
-                GetAgressiveOption(quest),
+                //GetAgressiveOption(quest),
             };
         }
 
