@@ -44,7 +44,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
             var questTypeInt = QUEST_TYPE_START + ((int)type * 100) + optionId * 10 + ((int)result);
             var questType =  (HistoryEventType)questTypeInt;
             if (questType == HistoryEventType.Unknown)
-                throw new Domain.Exceptions.ApplicationException("Не удалось определить тип истрического события");
+                throw new Domain.Exceptions.YagoException("Не удалось определить тип истрического события");
 
             return questType;
         }
@@ -95,7 +95,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
                     new(EntityType.Organization, quest.OrganizationId, HitsoryEventEnitiyRole.Initiator),
                     new(EntityType.Organization, quest.QuestEntity1Id, HitsoryEventEnitiyRole.Target)
                 },
-                _ => throw new Domain.Exceptions.ApplicationException("Неизвестный тип события для определения ролей")
+                _ => throw new Domain.Exceptions.YagoException("Неизвестный тип события для определения ролей")
             };
         }
     }

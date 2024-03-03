@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Domain.Exceptions;
 
 namespace YAGO.FantasyWorld.Server.Host.Middlewares
 {
@@ -23,19 +24,13 @@ namespace YAGO.FantasyWorld.Server.Host.Middlewares
             {
                 await _next.Invoke(context);
             }
-            catch (Domain.Exceptions.ApplicationException ex)
-            {
-                _logger.LogInformation(ex.Message, ex);
-                context.Response.StatusCode = ex.ErrorCode;
-                context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync(ex.Message);
-            }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message, ex);
-                context.Response.StatusCode = 500;
+                var yagoExeption = ex as YagoException;
+                _logger.LogError(ex, ex.Message);
+                context.Response.StatusCode = yagoExeption?.ErrorCode ?? 500;
                 context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Неизвестная ошибка.");
+                await context.Response.WriteAsync(yagoExeption?.Message ?? "Неизвестная ошибка.");
             }
         }
     }

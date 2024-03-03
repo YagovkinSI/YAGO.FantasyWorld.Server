@@ -5,9 +5,9 @@ namespace YAGO.FantasyWorld.Server.Domain.Exceptions
     /// <summary>
     /// Ошибка приложения
     /// </summary>
-    public class ApplicationException : Exception
+    public class YagoException : Exception
     {
-        public ApplicationException(string message, int errorCode = 500)
+        public YagoException(string message, int errorCode = 500)
             : base(message)
         {
             ErrorCode = errorCode;

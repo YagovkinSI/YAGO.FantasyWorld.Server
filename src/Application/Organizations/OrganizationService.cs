@@ -61,15 +61,15 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
                 throw new NotAuthorizedApplicationException();
 
             if (authorizationData.User.OrganizationId != null)
-                throw new ApplicationException("У вас уже есть организация.", 400);
+                throw new YagoException("У вас уже есть организация.", 400);
 
             cancellationToken.ThrowIfCancellationRequested();
             var organization = await FindOrganization(organizationId, cancellationToken);
             if (organization == null)
-                throw new ApplicationException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
+                throw new YagoException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
 
             if (organization.UserLink != null)
-                throw new ApplicationException(string.Format("Организация с ID={0} уже занята другим игроком.", organizationId), 400);
+                throw new YagoException(string.Format("Организация с ID={0} уже занята другим игроком.", organizationId), 400);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _organizationDatabaseService.SetUserForOrganization(organizationId, authorizationData.User.Id, cancellationToken);

@@ -4,25 +4,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Authorization.Models;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
+using YAGO.FantasyWorld.Server.Domain.Exceptions;
 using YAGO.FantasyWorld.Server.Infrastracture.Database.Models;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
 {
-    internal class IdentityService : IAuthorizationService
+    internal partial class IdentityService : IAuthorizationService
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IUserDatabaseService _userDatabaseService;
         private readonly ILogger<IdentityService> _logger;
 
-        private readonly Dictionary<string, Domain.Exceptions.ApplicationException> KNOWN_IDENTITY_ERROR_CODES = new()
+        private readonly Dictionary<string, KnownError> KNOWN_IDENTITY_ERROR_CODES = new()
         {
-            { "DuplicateUserName", new Domain.Exceptions.ApplicationException("Ошибка регистрации. Такой логин уже занят.", 409) }
+            { "DuplicateUserName", new KnownError("Ошибка регистрации. Такой логин уже занят.", 409) },
+            { "PasswordTooShort", new KnownError("Пароль должен содержать не менее 6 символов.", 400) },
+            { "PasswordRequiresLower", new KnownError("Пароль должен содержать строчные латинские буквы 'a'-'z'.", 400) },
+            { "PasswordRequiresUpper", new KnownError("Пароль должен содержать заглавные латинские буквы 'A'-'Z'.", 400) },
+            { "PasswordRequiresDigit", new KnownError("Пароль должен содержать цифры '0'-'9'.", 400) },
         };
 
         public IdentityService(
@@ -71,7 +75,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
             cancellationToken.ThrowIfCancellationRequested();
             var result = await _signInManager.PasswordSignInAsync(userName, password, true, false);
             if (!result.Succeeded)
-                throw new Domain.Exceptions.ApplicationException("Ошибка авторизации. Проверьте логин и пароль.");
+                throw new YagoException("Ошибка авторизации. Проверьте логин и пароль.");
 
             cancellationToken.ThrowIfCancellationRequested();
             var user = await _userDatabaseService.FindByUserName(userName, cancellationToken);
@@ -113,13 +117,16 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
 
         private Exception GetRegisterExeption(IEnumerable<IdentityError> errors)
         {
-            var error = errors.FirstOrDefault(e => KNOWN_IDENTITY_ERROR_CODES.ContainsKey(e.Code));
-            if (error == null)
+            var knownErrors = errors
+                .Where(e => KNOWN_IDENTITY_ERROR_CODES.ContainsKey(e.Code))
+                .Select(e => KNOWN_IDENTITY_ERROR_CODES[e.Code]);
+
+            if (!knownErrors.Any())
             {
                 _logger.LogError($"Ошибка регистрации. {string.Join(" .", errors.Select(e => $"{e.Code}: {e.Description}"))}");
-                return new Domain.Exceptions.ApplicationException("Ошибка регистрации. Неизвестная ошибка.");
+                return new YagoException("Ошибка регистрации. Неизвестная ошибка.");
             }
-            return KNOWN_IDENTITY_ERROR_CODES[error.Code];
+            return new YagoException($"Ошибка регистрации. {string.Join(" ", knownErrors.Select(e => e.Message))}", knownErrors.Min(e => e.Code));
         }
     }
 }

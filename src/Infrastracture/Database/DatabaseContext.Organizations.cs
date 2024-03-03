@@ -36,7 +36,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             var organization = await Organizations
                 .FindAsync(new object[] { organizationId }, cancellationToken: cancellationToken);
             if (organization == null)
-                throw new ApplicationException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
+                throw new YagoException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
 
             organization.UserId = userId;
             Update(organization);

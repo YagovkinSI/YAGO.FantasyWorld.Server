@@ -5,7 +5,7 @@ using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Domain;
 using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
 using YAGO.FantasyWorld.Server.Domain.Quests;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
+using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {

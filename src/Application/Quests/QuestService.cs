@@ -11,7 +11,7 @@ using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 using YAGO.FantasyWorld.Server.Domain.Exceptions;
 using YAGO.FantasyWorld.Server.Domain.Quests;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
+using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
 {
