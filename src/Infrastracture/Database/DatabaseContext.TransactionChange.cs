@@ -3,8 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Domain;
+using YAGO.FantasyWorld.Server.Domain.Common;
 using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
-using YAGO.FantasyWorld.Server.Domain.Quests;
 using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
@@ -32,7 +32,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         }
 
         private async Task HandleChageEntity(
-            QuestOptionResultEntity entity,
+            EntityChange entity,
             CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -47,7 +47,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             }
         }
 
-        private Task HandleChageOrganization(QuestOptionResultEntity entity, CancellationToken cancellationToken)
+        private Task HandleChageOrganization(EntityChange entity, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organization = Organizations.Find(entity.EntityId);

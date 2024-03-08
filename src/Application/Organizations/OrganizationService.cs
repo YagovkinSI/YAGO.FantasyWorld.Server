@@ -58,7 +58,7 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
             cancellationToken.ThrowIfCancellationRequested();
             var authorizationData = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
             if (!authorizationData.IsAuthorized)
-                throw new NotAuthorizedApplicationException();
+                throw new YagoNotAuthorizedException();
 
             if (authorizationData.User.OrganizationId != null)
                 throw new YagoException("У вас уже есть организация.", 400);

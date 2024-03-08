@@ -1,15 +1,15 @@
 ﻿using YAGO.FantasyWorld.Server.Domain.Enums;
 
-namespace YAGO.FantasyWorld.Server.Domain.Quests
+namespace YAGO.FantasyWorld.Server.Domain.Common
 {
     /// <summary>
-    /// Результат решения для одной сущности
+    /// Данные по изменению параметров сущности
     /// </summary>
-    public class QuestOptionResultEntity
+    public class EntityChange
     {
-        public QuestOptionResultEntity(EntityType entityType,
+        public EntityChange(EntityType entityType,
             long entityId,
-            QuestOptionResultEntityParameter[] questOptionResultEntityParameters)
+            EntityParameterChange[] questOptionResultEntityParameters)
         {
             EntityType = entityType;
             EntityId = entityId;
@@ -29,6 +29,6 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         /// <summary>
         /// Изменнеия параметров
         /// </summary>
-        public QuestOptionResultEntityParameter[] QuestOptionResultEntityParameters { get; set; }
+        public EntityParameterChange[] QuestOptionResultEntityParameters { get; set; }
     }
 }

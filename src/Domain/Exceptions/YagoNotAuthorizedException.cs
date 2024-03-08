@@ -1,8 +1,8 @@
 ﻿namespace YAGO.FantasyWorld.Server.Domain.Exceptions
 {
-    public class NotAuthorizedApplicationException : YagoException
+    public class YagoNotAuthorizedException : YagoException
     {
-        public NotAuthorizedApplicationException()
+        public YagoNotAuthorizedException()
             : base("Необходимо авторизоваться.", 401)
         {
         }

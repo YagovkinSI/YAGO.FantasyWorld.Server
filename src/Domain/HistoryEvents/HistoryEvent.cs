@@ -1,6 +1,6 @@
 ﻿using System;
+using YAGO.FantasyWorld.Server.Domain.Common;
 using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Quests;
 
 namespace YAGO.FantasyWorld.Server.Domain.HistoryEvents
 {
@@ -37,6 +37,6 @@ namespace YAGO.FantasyWorld.Server.Domain.HistoryEvents
         /// <summary>
         /// Изменения параметров
         /// </summary>
-        public QuestOptionResultEntity[] ParameterChanges { get; set; }
+        public EntityChange[] ParameterChanges { get; set; }
     }
 }

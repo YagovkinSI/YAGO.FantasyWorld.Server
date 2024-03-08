@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Domain.Common;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 
 namespace YAGO.FantasyWorld.Server.Domain.Quests
@@ -9,7 +10,7 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
     /// </summary>
     public class QuestOptionResult
     {
-        public QuestOptionResult(QuestOptionResultType type, string text, int weight, QuestOptionResultEntity[] questOptionResultEntities)
+        public QuestOptionResult(QuestOptionResultType type, string text, int weight, EntityChange[] questOptionResultEntities)
         {
             Type = type;
             Text = text;
@@ -35,6 +36,6 @@ namespace YAGO.FantasyWorld.Server.Domain.Quests
         /// <summary>
         /// Изменения параметров сущностей по результатам
         /// </summary>
-        public QuestOptionResultEntity[] QuestOptionResultEntities { get; }
+        public EntityChange[] QuestOptionResultEntities { get; }
     }
 }

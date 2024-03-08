@@ -1,11 +1,11 @@
-﻿namespace YAGO.FantasyWorld.Server.Domain.Quests
+﻿namespace YAGO.FantasyWorld.Server.Domain.Common
 {
     /// <summary>
     /// Результат решения для параметра сущности
     /// </summary>
-    public class QuestOptionResultEntityParameter
+    public class EntityParameterChange
     {
-        public QuestOptionResultEntityParameter(EntityParametres entityParameter, double change)
+        public EntityParameterChange(EntityParametres entityParameter, double change)
         {
             EntityParameter = entityParameter;
             Change = change.ToString();

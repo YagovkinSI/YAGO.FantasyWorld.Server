@@ -1,4 +1,5 @@
 ﻿using System;
+using YAGO.FantasyWorld.Server.Domain.Common;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 using YAGO.FantasyWorld.Server.Domain.Quests;
 
@@ -36,7 +37,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
                 QuestOptionResultType.Neitral,
                 "Ваши усилия по развитию владений идут не так быстро, как Вы ожидали.",
                 weight,
-                Array.Empty<QuestOptionResultEntity>()
+                Array.Empty<EntityChange>()
             );
         }
 

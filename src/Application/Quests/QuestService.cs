@@ -162,7 +162,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             {
                 QuestType.Unknown => throw new ApplicationException("Неизвестный тип квеста! Обратитесь к разработчику."),
                 QuestType.BaseQuest => new BaseQuest(quest, _organizationService),
-                _ => throw new NotImplementedApplicationException(),
+                _ => throw new YagoNotImplementedException(),
             };
         }
 

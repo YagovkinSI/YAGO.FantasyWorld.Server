@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Domain;
+using YAGO.FantasyWorld.Server.Domain.Common;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
 using YAGO.FantasyWorld.Server.Domain.Quests;
@@ -41,15 +41,14 @@ namespace YAGO.FantasyWorld.Server.Application.History
         }
         private HistoryEventType GetHistoryEventType(QuestType type, int optionId, QuestOptionResultType result)
         {
-            var questTypeInt = QUEST_TYPE_START + ((int)type * 100) + optionId * 10 + ((int)result);
-            var questType =  (HistoryEventType)questTypeInt;
-            if (questType == HistoryEventType.Unknown)
-                throw new Domain.Exceptions.YagoException("Не удалось определить тип истрического события");
-
-            return questType;
+            var questTypeInt = QUEST_TYPE_START + ((int)type * 100) + (optionId * 10) + ((int)result);
+            var questType = (HistoryEventType)questTypeInt;
+            return questType == HistoryEventType.Unknown
+                ? throw new Domain.Exceptions.YagoException("Не удалось определить тип истрического события")
+                : questType;
         }
 
-        private HistoryEventEntityWeight[] CalcEntityWeights(QuestOptionResultEntity[] questOptionResultEntities, HistoryEventEntity[] enities)
+        private HistoryEventEntityWeight[] CalcEntityWeights(EntityChange[] questOptionResultEntities, HistoryEventEntity[] enities)
         {
             var entityWeights = new List<HistoryEventEntityWeight>();
             foreach (var parameterChanges in questOptionResultEntities)
@@ -72,7 +71,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
             return entityWeights.ToArray();
         }
 
-        private int CalcWeight(QuestOptionResultEntityParameter[] questOptionResultEntityParameters)
+        private int CalcWeight(EntityParameterChange[] questOptionResultEntityParameters)
         {
             var result = 0;
             foreach (var parameter in questOptionResultEntityParameters)
