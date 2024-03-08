@@ -5,15 +5,14 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.ApiContracts.Common.Enums;
-using YAGO.FantasyWorld.Domain;
 using YAGO.FantasyWorld.ApiContracts.QuestApi.Enums;
 using YAGO.FantasyWorld.ApiContracts.QuestApi.Models;
+using YAGO.FantasyWorld.Domain;
+using YAGO.FantasyWorld.Domain.Exceptions;
 using YAGO.FantasyWorld.Server.Application.History;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
-using YAGO.FantasyWorld.Domain.Exceptions;
-using ApplicationException = YAGO.FantasyWorld.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
 {
@@ -58,9 +57,9 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             cancellationToken.ThrowIfCancellationRequested();
             var user = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
             if (!user.IsAuthorized)
-                throw new ApplicationException("Для получения квеста необходимо авторизоваться");
+                throw new YagoException("Для получения квеста необходимо авторизоваться");
             if (user.User.OrganizationId == null)
-                throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
+                throw new YagoException("Для получения квеста необходимо выбрать организацию");
 
             var lastQuests = await _questDatabaseService.GetLastQuestes(user.User.OrganizationId.Value, _questReadinessService.QuestTimeoutCount, cancellationToken);
             return await TryGetNotCompletedQuest(lastQuests, cancellationToken)
@@ -89,15 +88,15 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             cancellationToken.ThrowIfCancellationRequested();
             var user = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
             if (!user.IsAuthorized)
-                throw new ApplicationException("Для получения квеста необходимо авторизоваться");
+                throw new YagoException("Для получения квеста необходимо авторизоваться");
             if (user.User.OrganizationId == null)
-                throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
+                throw new YagoException("Для получения квеста необходимо выбрать организацию");
 
             var quest = await _questDatabaseService.FindQuest(questId, cancellationToken);
             if (quest.OrganizationId != user.User.OrganizationId)
-                throw new ApplicationException("Некорректный идентификатор квеста.");
+                throw new YagoException("Некорректный идентификатор квеста.");
             if (quest.Status != QuestStatus.Created)
-                throw new ApplicationException("Неверный статус квеста.");
+                throw new YagoException("Неверный статус квеста.");
 
             var questDatails = GetQuestDatails(quest);
             var result = await questDatails.HandleQuestOption(questOptionId, cancellationToken);
