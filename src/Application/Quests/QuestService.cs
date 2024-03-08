@@ -4,16 +4,16 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using Yago.FantasyWorld.ApiContracts.Common.Enums;
-using Yago.FantasyWorld.ApiContracts.Domain;
-using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
-using Yago.FantasyWorld.ApiContracts.QuestApi.Models;
+using YAGO.FantasyWorld.ApiContracts.Common.Enums;
+using YAGO.FantasyWorld.Domain;
+using YAGO.FantasyWorld.ApiContracts.QuestApi.Enums;
+using YAGO.FantasyWorld.ApiContracts.QuestApi.Models;
 using YAGO.FantasyWorld.Server.Application.History;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
-using YAGO.FantasyWorld.Server.Domain.Exceptions;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
+using YAGO.FantasyWorld.Domain.Exceptions;
+using ApplicationException = YAGO.FantasyWorld.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Yago.FantasyWorld.ApiContracts.Common.Enums;
+using YAGO.FantasyWorld.ApiContracts.Common.Enums;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 {

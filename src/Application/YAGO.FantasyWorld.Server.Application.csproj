@@ -5,12 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\YAGO.FantasyWorld.Server.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Yago.FantasyWorld.ApiContracts">
-      <HintPath>..\..\libs\Yago.FantasyWorld.ApiContracts.dll</HintPath>
+      <HintPath>..\..\libs\YAGO.FantasyWorld.ApiContracts.dll</HintPath>
+    </Reference>
+    <Reference Include="YAGO.FantasyWorld.Domain">
+      <HintPath>..\..\libs\YAGO.FantasyWorld.Domain.dll</HintPath>
     </Reference>
   </ItemGroup>
 

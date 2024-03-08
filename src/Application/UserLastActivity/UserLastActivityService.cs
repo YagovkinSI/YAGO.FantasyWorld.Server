@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Yago.FantasyWorld.ApiContracts.Domain;
+using YAGO.FantasyWorld.Domain;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 
 namespace YAGO.FantasyWorld.Server.Application.UserLastActivity

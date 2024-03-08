@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Yago.FantasyWorld.ApiContracts.Common.Enums;
-using Yago.FantasyWorld.ApiContracts.Common.Models;
-using Yago.FantasyWorld.ApiContracts.Domain;
-using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
-using Yago.FantasyWorld.ApiContracts.QuestApi.Models;
+using YAGO.FantasyWorld.ApiContracts.Common.Enums;
+using YAGO.FantasyWorld.ApiContracts.Common.Models;
+using YAGO.FantasyWorld.Domain;
+using YAGO.FantasyWorld.ApiContracts.QuestApi.Enums;
+using YAGO.FantasyWorld.ApiContracts.QuestApi.Models;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 

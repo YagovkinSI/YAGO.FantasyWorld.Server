@@ -1,5 +1,5 @@
 ﻿using System;
-using Yago.FantasyWorld.ApiContracts.Domain;
+using YAGO.FantasyWorld.Domain;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
 {

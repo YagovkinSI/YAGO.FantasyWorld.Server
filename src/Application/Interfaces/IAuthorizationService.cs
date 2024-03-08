@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Application.Authorization.Models;
+using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Replies;
 
 namespace YAGO.FantasyWorld.Server.Application.Interfaces
 {

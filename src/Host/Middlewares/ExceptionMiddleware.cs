@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.Exceptions;
 
 namespace YAGO.FantasyWorld.Server.Host.Middlewares
 {

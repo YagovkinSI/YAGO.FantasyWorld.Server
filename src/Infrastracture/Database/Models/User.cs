@@ -12,9 +12,9 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 
         public virtual List<Organization> Organizations { get; set; }
 
-        internal Yago.FantasyWorld.ApiContracts.Domain.User ToDomain()
+        internal YAGO.FantasyWorld.Domain.User ToDomain()
         {
-            return new Yago.FantasyWorld.ApiContracts.Domain.User
+            return new YAGO.FantasyWorld.Domain.User
             (
                 Id,
                 UserName,

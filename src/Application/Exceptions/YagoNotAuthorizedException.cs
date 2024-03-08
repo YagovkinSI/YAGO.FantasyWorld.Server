@@ -1,4 +1,4 @@
-﻿namespace YAGO.FantasyWorld.Server.Domain.Exceptions
+﻿namespace YAGO.FantasyWorld.Domain.Exceptions
 {
     public class YagoNotAuthorizedException : YagoException
     {

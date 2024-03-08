@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using Yago.FantasyWorld.ApiContracts.Common.Models;
+using YAGO.FantasyWorld.ApiContracts.Common.Models;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 {
@@ -26,13 +26,13 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
             model.HasIndex(m => m.UserId);
         }
 
-        public Yago.FantasyWorld.ApiContracts.Domain.Organization ToDomain()
+        public YAGO.FantasyWorld.Domain.Organization ToDomain()
         {
             var userLink = UserId == null
                 ? null
                 : new IdLink<string>(User.Id, User.UserName);
 
-            return new Yago.FantasyWorld.ApiContracts.Domain.Organization
+            return new YAGO.FantasyWorld.Domain.Organization
             (
                 Id,
                 Name,

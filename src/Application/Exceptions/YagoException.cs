@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YAGO.FantasyWorld.Server.Domain.Exceptions
+namespace YAGO.FantasyWorld.Domain.Exceptions
 {
     /// <summary>
     /// Ошибка приложения

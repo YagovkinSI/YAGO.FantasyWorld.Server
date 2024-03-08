@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Replies;
+using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Requests;
 using YAGO.FantasyWorld.Server.Application.Authorization;
-using YAGO.FantasyWorld.Server.Application.Authorization.Models;
-using YAGO.FantasyWorld.Server.Host.Models.Authorization;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers
 {

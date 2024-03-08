@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
+using YAGO.FantasyWorld.Domain;
 
 namespace YAGO.FantasyWorld.Server.Application.Interfaces
 {

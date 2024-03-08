@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Yago.FantasyWorld.ApiContracts.Common.Enums;
-using Yago.FantasyWorld.ApiContracts.Common.Models;
-using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
+using YAGO.FantasyWorld.ApiContracts.Common.Enums;
+using YAGO.FantasyWorld.ApiContracts.Common.Models;
+using YAGO.FantasyWorld.ApiContracts.QuestApi.Enums;
+using YAGO.FantasyWorld.Domain;
+using YAGO.FantasyWorld.Domain.Exceptions;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
@@ -44,7 +44,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                     break;
                 case EntityType.Unknown:
                 default:
-                    throw new ApplicationException("Неизвестный тип данных для изменения");
+                    throw new YagoException("Неизвестный тип данных для изменения");
             }
         }
 
@@ -57,7 +57,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                 organization.Power += parameter.EntityParameter switch
                 {
                     EntityParameter.OrganizationPower => int.Parse(parameter.Change),
-                    _ => throw new ApplicationException("Неизвестный тип параметра организации для изменения"),
+                    _ => throw new YagoException("Неизвестный тип параметра организации для изменения"),
                 };
             }
             return Task.CompletedTask;

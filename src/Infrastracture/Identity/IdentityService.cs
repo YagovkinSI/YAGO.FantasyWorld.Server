@@ -6,9 +6,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Application.Authorization.Models;
+using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Replies;
+using YAGO.FantasyWorld.Domain.Exceptions;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain.Exceptions;
 using YAGO.FantasyWorld.Server.Infrastracture.Database.Models;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
@@ -104,7 +104,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
             return GetAuthorizationDataAsync(domainUser);
         }
 
-        private static AuthorizationData GetAuthorizationDataAsync(Yago.FantasyWorld.ApiContracts.Domain.User user)
+        private static AuthorizationData GetAuthorizationDataAsync(YAGO.FantasyWorld.Domain.User user)
         {
             return user == null
                 ? AuthorizationData.NotAuthorized
