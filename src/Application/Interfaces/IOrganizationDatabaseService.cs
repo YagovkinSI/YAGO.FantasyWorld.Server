@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Domain;
+using YAGO.FantasyWorld.Domain.Organizations;
 
 namespace YAGO.FantasyWorld.Server.Application.Interfaces
 {

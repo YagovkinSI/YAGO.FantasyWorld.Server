@@ -14,9 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Yago.FantasyWorld.ApiContracts">
-      <HintPath>..\..\libs\YAGO.FantasyWorld.ApiContracts.dll</HintPath>
-    </Reference>
     <Reference Include="Yago.FantasyWorld.Domain">
       <HintPath>..\..\libs\Yago.FantasyWorld.Domain.dll</HintPath>
     </Reference>

@@ -10,7 +10,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
     public partial class DatabaseContext : IOrganizationDatabaseService
     {
-        public async Task<IEnumerable<Domain.Organization>> GetOrganizations(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Domain.Organizations.Organization>> GetOrganizations(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organizations = await Organizations
@@ -20,7 +20,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                 .Select(o => o.ToDomain());
         }
 
-        public async Task<Domain.Organization> FindOrganization(long organizationId, CancellationToken cancellationToken)
+        public async Task<Domain.Organizations.Organization> FindOrganization(long organizationId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organization = await Organizations

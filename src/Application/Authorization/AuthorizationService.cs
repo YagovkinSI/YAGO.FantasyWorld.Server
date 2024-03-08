@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.UserLastActivity;
 using YAGO.FantasyWorld.Domain.Exceptions;
-using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Replies;
+using YAGO.FantasyWorld.Domain.Users;
 
 namespace YAGO.FantasyWorld.Server.Application.Authorization
 {

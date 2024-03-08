@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using YAGO.FantasyWorld.Domain.Enums;
+using YAGO.FantasyWorld.Domain.HistoryEvents.Enums;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 {

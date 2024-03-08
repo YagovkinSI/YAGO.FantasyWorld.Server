@@ -6,17 +6,16 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Replies;
 using YAGO.FantasyWorld.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.Users;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Infrastracture.Database.Models;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
 {
     internal partial class IdentityService : IAuthorizationService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<Database.Models.User> _userManager;
+        private readonly SignInManager<Database.Models.User> _signInManager;
         private readonly IUserDatabaseService _userDatabaseService;
         private readonly ILogger<IdentityService> _logger;
 
@@ -30,8 +29,8 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
         };
 
         public IdentityService(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            UserManager<Database.Models.User> userManager,
+            SignInManager<Database.Models.User> signInManager,
             IUserDatabaseService userDatabaseService,
             ILogger<IdentityService> logger)
         {
@@ -51,7 +50,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
         public async Task<AuthorizationData> RegisterAsync(string userName, string password, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var newUser = new User
+            var newUser = new Database.Models.User
             {
                 Email = string.Empty,
                 UserName = userName,
@@ -95,7 +94,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
             await _signInManager.SignOutAsync();
         }
 
-        private static AuthorizationData ToAuthorizationData(User user)
+        private static AuthorizationData ToAuthorizationData(Database.Models.User user)
         {
             if (user == null)
                 return AuthorizationData.NotAuthorized;
@@ -104,7 +103,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
             return GetAuthorizationDataAsync(domainUser);
         }
 
-        private static AuthorizationData GetAuthorizationDataAsync(YAGO.FantasyWorld.Domain.User user)
+        private static AuthorizationData GetAuthorizationDataAsync(User user)
         {
             return user == null
                 ? AuthorizationData.NotAuthorized

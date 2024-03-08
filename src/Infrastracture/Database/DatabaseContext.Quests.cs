@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Domain;
+using YAGO.FantasyWorld.Domain.Quests;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database

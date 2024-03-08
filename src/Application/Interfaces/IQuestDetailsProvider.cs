@@ -1,8 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.ApiContracts.QuestApi.Enums;
-using YAGO.FantasyWorld.Domain;
-using YAGO.FantasyWorld.ApiContracts.QuestApi.Models;
+using YAGO.FantasyWorld.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 
 namespace YAGO.FantasyWorld.Server.Application.Interfaces
 {

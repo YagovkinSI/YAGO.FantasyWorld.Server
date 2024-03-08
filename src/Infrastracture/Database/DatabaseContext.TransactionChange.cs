@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.ApiContracts.Common.Enums;
-using YAGO.FantasyWorld.ApiContracts.Common.Models;
-using YAGO.FantasyWorld.ApiContracts.QuestApi.Enums;
-using YAGO.FantasyWorld.Domain;
+using YAGO.FantasyWorld.Domain.Entities;
+using YAGO.FantasyWorld.Domain.Entities.Enums;
 using YAGO.FantasyWorld.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.HistoryEvents;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database

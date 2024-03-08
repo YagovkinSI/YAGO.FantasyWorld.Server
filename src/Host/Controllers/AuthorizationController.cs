@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Replies;
-using YAGO.FantasyWorld.ApiContracts.AuthorizationApi.Requests;
+using YAGO.FantasyWorld.Domain.Users;
 using YAGO.FantasyWorld.Server.Application.Authorization;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers
