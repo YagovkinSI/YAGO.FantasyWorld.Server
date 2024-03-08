@@ -104,7 +104,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Identity
             return GetAuthorizationDataAsync(domainUser);
         }
 
-        private static AuthorizationData GetAuthorizationDataAsync(Domain.User user)
+        private static AuthorizationData GetAuthorizationDataAsync(Yago.FantasyWorld.ApiContracts.Domain.User user)
         {
             return user == null
                 ? AuthorizationData.NotAuthorized

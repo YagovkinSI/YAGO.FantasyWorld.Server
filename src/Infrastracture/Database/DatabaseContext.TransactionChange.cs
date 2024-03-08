@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.Common.Enums;
+using Yago.FantasyWorld.ApiContracts.Common.Models;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain;
-using YAGO.FantasyWorld.Server.Domain.Common;
 using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
 using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
 
@@ -18,7 +19,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         {
             cancellationToken.ThrowIfCancellationRequested();
             var quest = Quests.Find(questId);
-            quest.Status = Domain.Enums.QuestStatus.Completed;
+            quest.Status = QuestStatus.Completed;
 
             foreach (var entity in historyEvent.ParameterChanges)
             {
@@ -38,10 +39,10 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             cancellationToken.ThrowIfCancellationRequested();
             switch (entity.EntityType)
             {
-                case Domain.Enums.EntityType.Organization:
+                case EntityType.Organization:
                     await HandleChageOrganization(entity, cancellationToken);
                     break;
-                case Domain.Enums.EntityType.Unknown:
+                case EntityType.Unknown:
                 default:
                     throw new ApplicationException("Неизвестный тип данных для изменения");
             }
@@ -51,11 +52,11 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organization = Organizations.Find(entity.EntityId);
-            foreach (var parameter in entity.QuestOptionResultEntityParameters)
+            foreach (var parameter in entity.EntityParametersChange)
             {
                 organization.Power += parameter.EntityParameter switch
                 {
-                    EntityParametres.OrganizationPower => int.Parse(parameter.Change),
+                    EntityParameter.OrganizationPower => int.Parse(parameter.Change),
                     _ => throw new ApplicationException("Неизвестный тип параметра организации для изменения"),
                 };
             }

@@ -2,9 +2,9 @@
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.Domain;
 using YAGO.FantasyWorld.Server.Application.Authorization.Models;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain;
 using YAGO.FantasyWorld.Server.Domain.Exceptions;
 
 namespace YAGO.FantasyWorld.Server.Application.Organizations

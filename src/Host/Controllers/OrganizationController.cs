@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.Domain;
 using YAGO.FantasyWorld.Server.Application.Authorization.Models;
 using YAGO.FantasyWorld.Server.Application.Organizations;
-using YAGO.FantasyWorld.Server.Domain;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using YAGO.FantasyWorld.Server.Domain.Common;
+using Yago.FantasyWorld.ApiContracts.Common.Models;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 
 namespace YAGO.FantasyWorld.Server.Domain.HistoryEvents

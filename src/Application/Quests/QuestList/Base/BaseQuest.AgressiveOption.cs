@@ -1,5 +1,6 @@
-﻿using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Quests;
+﻿using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
+using Yago.FantasyWorld.ApiContracts.Domain;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Models;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 {

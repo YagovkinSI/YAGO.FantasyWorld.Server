@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.Domain;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
-using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Quests;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
 {

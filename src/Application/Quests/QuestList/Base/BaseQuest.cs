@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.Common.Enums;
+using Yago.FantasyWorld.ApiContracts.Common.Models;
+using Yago.FantasyWorld.ApiContracts.Domain;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Models;
+using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
-using YAGO.FantasyWorld.Server.Domain.Common;
-using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Quests;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 {
@@ -79,7 +81,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
                 organizationId,
                 new EntityParameterChange[]
                 {
-                    new(Domain.EntityParametres.OrganizationPower, changeParameter)
+                    new(EntityParameter.OrganizationPower, changeParameter.ToString())
                 }
             );
         }

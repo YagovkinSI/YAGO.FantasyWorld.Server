@@ -4,13 +4,15 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.Common.Enums;
+using Yago.FantasyWorld.ApiContracts.Domain;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Models;
 using YAGO.FantasyWorld.Server.Application.History;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
-using YAGO.FantasyWorld.Server.Domain.Enums;
 using YAGO.FantasyWorld.Server.Domain.Exceptions;
-using YAGO.FantasyWorld.Server.Domain.Quests;
 using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.YagoException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
@@ -110,9 +112,9 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         {
             var mainText = questOptionResult.Text;
 
-            var organizationResult = questOptionResult.QuestOptionResultEntities
+            var organizationResult = questOptionResult.EntitiesChange
                 .SingleOrDefault(r => r.EntityType == EntityType.Organization && r.EntityId == organizationId)
-                ?.QuestOptionResultEntityParameters.SingleOrDefault(r => r.EntityParameter == Domain.EntityParametres.OrganizationPower)
+                ?.EntityParametersChange.SingleOrDefault(r => r.EntityParameter == EntityParameter.OrganizationPower)
                 ?.Change;
             var organizationResultInt = organizationResult == null ? 0 : int.Parse(organizationResult);
             var organizationResultText = organizationResultInt != 0
@@ -121,9 +123,9 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
                     : $"Ваше могущество уменьшилось на {-organizationResultInt}"
                 : "Ваше могущество не изменилось";
 
-            var oponnentResult = questOptionResult.QuestOptionResultEntities
+            var oponnentResult = questOptionResult.EntitiesChange
                 .SingleOrDefault(r => r.EntityType == EntityType.Organization && r.EntityId != organizationId)
-                ?.QuestOptionResultEntityParameters.SingleOrDefault(r => r.EntityParameter == Domain.EntityParametres.OrganizationPower)
+                ?.EntityParametersChange.SingleOrDefault(r => r.EntityParameter == EntityParameter.OrganizationPower)
                 ?.Change;
             var oponnentResultInt = oponnentResult == null ? 0 : int.Parse(oponnentResult);
             var oponnentResultText = oponnentResultInt != 0

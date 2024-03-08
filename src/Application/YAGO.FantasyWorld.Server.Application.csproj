@@ -8,4 +8,10 @@
     <ProjectReference Include="..\Domain\YAGO.FantasyWorld.Server.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Yago.FantasyWorld.ApiContracts">
+      <HintPath>..\..\libs\Yago.FantasyWorld.ApiContracts.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

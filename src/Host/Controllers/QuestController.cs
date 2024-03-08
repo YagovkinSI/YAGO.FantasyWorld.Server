@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Models;
 using YAGO.FantasyWorld.Server.Application.Quests;
-using YAGO.FantasyWorld.Server.Domain.Quests;
 using YAGO.FantasyWorld.Server.Host.Models.Quest;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Domain;
-using YAGO.FantasyWorld.Server.Domain.Common;
+using Yago.FantasyWorld.ApiContracts.Common.Enums;
+using Yago.FantasyWorld.ApiContracts.Common.Models;
+using Yago.FantasyWorld.ApiContracts.Domain;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Models;
 using YAGO.FantasyWorld.Server.Domain.Enums;
 using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
-using YAGO.FantasyWorld.Server.Domain.Quests;
 
 namespace YAGO.FantasyWorld.Server.Application.History
 {
@@ -28,7 +30,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
             cancellationToken.ThrowIfCancellationRequested();
             var type = GetHistoryEventType(quest.Type, optionId, result.Type);
             var enities = GetHistoryEventEntities(quest);
-            var weights = CalcEntityWeights(result.QuestOptionResultEntities, enities);
+            var weights = CalcEntityWeights(result.EntitiesChange, enities);
 
             return Task.FromResult(new HistoryEvent
             {
@@ -36,7 +38,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
                 Type = type,
                 HistoryEventEntities = enities,
                 EntityWeights = weights,
-                ParameterChanges = result.QuestOptionResultEntities
+                ParameterChanges = result.EntitiesChange
             });
         }
         private HistoryEventType GetHistoryEventType(QuestType type, int optionId, QuestOptionResultType result)
@@ -57,7 +59,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
                 {
                     EntityType = parameterChanges.EntityType,
                     EntityId = parameterChanges.EntityId,
-                    Weight = CalcWeight(parameterChanges.QuestOptionResultEntityParameters)
+                    Weight = CalcWeight(parameterChanges.EntityParametersChange)
                 };
                 entityWeights.Add(entityWeight);
             }
@@ -78,7 +80,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
             {
                 result += parameter.EntityParameter switch
                 {
-                    EntityParametres.OrganizationPower => Math.Abs(int.Parse(parameter.Change)),
+                    EntityParameter.OrganizationPower => Math.Abs(int.Parse(parameter.Change)),
                     _ => 0
                 };
             }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using YAGO.FantasyWorld.Server.Domain.Enums;
+using Yago.FantasyWorld.ApiContracts.QuestApi.Enums;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 {
@@ -27,9 +27,9 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
             model.HasIndex(m => m.Status);
         }
 
-        internal Domain.Quests.Quest ToDomain()
+        internal Yago.FantasyWorld.ApiContracts.Domain.Quest ToDomain()
         {
-            return new Domain.Quests.Quest
+            return new Yago.FantasyWorld.ApiContracts.Domain.Quest
             {
                 Id = Id,
                 OrganizationId = OrganizationId,

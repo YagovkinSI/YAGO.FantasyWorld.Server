@@ -2,13 +2,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Yago.FantasyWorld.ApiContracts.Domain;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
     public partial class DatabaseContext : IUserDatabaseService
     {
-        public async Task<Domain.User> Find(string userId, CancellationToken cancellationToken)
+        public async Task<User> Find(string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var user = await Users
@@ -17,7 +18,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             return user?.ToDomain();
         }
 
-        public async Task<Domain.User> FindByUserName(string userName, CancellationToken cancellationToken)
+        public async Task<User> FindByUserName(string userName, CancellationToken cancellationToken)
         {
             var user = await Users
                 .Include(u => u.Organizations)

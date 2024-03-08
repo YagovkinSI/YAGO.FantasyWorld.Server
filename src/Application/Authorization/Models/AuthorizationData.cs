@@ -1,4 +1,4 @@
-﻿using YAGO.FantasyWorld.Server.Domain;
+﻿using Yago.FantasyWorld.ApiContracts.Domain;
 
 namespace YAGO.FantasyWorld.Server.Application.Authorization.Models
 {
