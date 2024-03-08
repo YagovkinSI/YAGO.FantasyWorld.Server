@@ -52,7 +52,9 @@ namespace YAGO.FantasyWorld.Server.Application.Authorization
         public async Task<AuthorizationData> RegisterAsync(string userName, string password, string passwordConfirm, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            ValidateData(userName, password, passwordConfirm);
+            var validateErrors = FindValidateErrors(userName, password, passwordConfirm);
+            if (validateErrors.Any())
+                throw new YagoException(string.Join(" ", validateErrors));
 
             cancellationToken.ThrowIfCancellationRequested();
             var authorizationData = await _authorizationService.RegisterAsync(userName, password, cancellationToken);
@@ -74,7 +76,9 @@ namespace YAGO.FantasyWorld.Server.Application.Authorization
         public async Task<AuthorizationData> LoginAsync(string userName, string password, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            ValidateData(userName, password, password);
+            var validateErrors = FindValidateErrors(userName, password);
+            if (validateErrors.Any())
+                throw new YagoException(string.Join(" ", validateErrors));
 
             cancellationToken.ThrowIfCancellationRequested();
             var authorizationData = await _authorizationService.LoginAsync(userName, password, cancellationToken);
@@ -104,7 +108,19 @@ namespace YAGO.FantasyWorld.Server.Application.Authorization
             Task.WaitAll(tasks, cancellationToken);
         }
 
-        private void ValidateData(string userName, string password, string passwordConfirm)
+        private List<string> FindValidateErrors(string userName, string password, string passwordConfirm)
+        {
+            var errorList = FindValidateErrors(userName, password);
+
+            if (string.IsNullOrEmpty(passwordConfirm))
+                errorList.Add("Необходимо повторить пароль.");
+            if (password != passwordConfirm)
+                errorList.Add("Введенные пароли не совпадают.");
+
+            return errorList;
+        }
+
+        private List<string> FindValidateErrors(string userName, string password)
         {
             var errorList = new List<string>();
 
@@ -112,13 +128,8 @@ namespace YAGO.FantasyWorld.Server.Application.Authorization
                 errorList.Add("Необходимо указать логин.");
             if (string.IsNullOrEmpty(password))
                 errorList.Add("Необходимо указать пароль.");
-            if (!string.IsNullOrEmpty(password) && string.IsNullOrEmpty(passwordConfirm))
-                errorList.Add("Необходимо повторить пароль.");
-            if (password != passwordConfirm)
-                errorList.Add("Введенные пароли не совпадают.");
 
-            if (errorList.Any())
-                throw new YagoException(string.Join(" ", errorList));
+            return errorList;
         }
     }
 }
