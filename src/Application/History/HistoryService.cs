@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Domain;
-using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
-using YAGO.FantasyWorld.Server.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Entities;
+using YAGO.FantasyWorld.Domain.Entities.Enums;
+using YAGO.FantasyWorld.Domain.HistoryEvents;
+using YAGO.FantasyWorld.Domain.HistoryEvents.Enums;
+using YAGO.FantasyWorld.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 
 namespace YAGO.FantasyWorld.Server.Application.History
 {
@@ -28,7 +29,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
             cancellationToken.ThrowIfCancellationRequested();
             var type = GetHistoryEventType(quest.Type, optionId, result.Type);
             var enities = GetHistoryEventEntities(quest);
-            var weights = CalcEntityWeights(result.QuestOptionResultEntities, enities);
+            var weights = CalcEntityWeights(result.EntitiesChange, enities);
 
             return Task.FromResult(new HistoryEvent
             {
@@ -36,20 +37,19 @@ namespace YAGO.FantasyWorld.Server.Application.History
                 Type = type,
                 HistoryEventEntities = enities,
                 EntityWeights = weights,
-                ParameterChanges = result.QuestOptionResultEntities
+                ParameterChanges = result.EntitiesChange
             });
         }
         private HistoryEventType GetHistoryEventType(QuestType type, int optionId, QuestOptionResultType result)
         {
-            var questTypeInt = QUEST_TYPE_START + ((int)type * 100) + optionId * 10 + ((int)result);
-            var questType =  (HistoryEventType)questTypeInt;
-            if (questType == HistoryEventType.Unknown)
-                throw new Domain.Exceptions.ApplicationException("Не удалось определить тип истрического события");
-
-            return questType;
+            var questTypeInt = QUEST_TYPE_START + ((int)type * 100) + (optionId * 10) + ((int)result);
+            var questType = (HistoryEventType)questTypeInt;
+            return questType == HistoryEventType.Unknown
+                ? throw new Domain.Exceptions.YagoException("Не удалось определить тип истрического события")
+                : questType;
         }
 
-        private HistoryEventEntityWeight[] CalcEntityWeights(QuestOptionResultEntity[] questOptionResultEntities, HistoryEventEntity[] enities)
+        private HistoryEventEntityWeight[] CalcEntityWeights(EntityChange[] questOptionResultEntities, HistoryEventEntity[] enities)
         {
             var entityWeights = new List<HistoryEventEntityWeight>();
             foreach (var parameterChanges in questOptionResultEntities)
@@ -58,7 +58,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
                 {
                     EntityType = parameterChanges.EntityType,
                     EntityId = parameterChanges.EntityId,
-                    Weight = CalcWeight(parameterChanges.QuestOptionResultEntityParameters)
+                    Weight = CalcWeight(parameterChanges.EntityParametersChange)
                 };
                 entityWeights.Add(entityWeight);
             }
@@ -72,14 +72,14 @@ namespace YAGO.FantasyWorld.Server.Application.History
             return entityWeights.ToArray();
         }
 
-        private int CalcWeight(QuestOptionResultEntityParameter[] questOptionResultEntityParameters)
+        private int CalcWeight(EntityParameterChange[] questOptionResultEntityParameters)
         {
             var result = 0;
             foreach (var parameter in questOptionResultEntityParameters)
             {
                 result += parameter.EntityParameter switch
                 {
-                    EntityParametres.OrganizationPower => Math.Abs(int.Parse(parameter.Change)),
+                    EntityParameter.OrganizationPower => Math.Abs(int.Parse(parameter.Change)),
                     _ => 0
                 };
             }
@@ -95,7 +95,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
                     new(EntityType.Organization, quest.OrganizationId, HitsoryEventEnitiyRole.Initiator),
                     new(EntityType.Organization, quest.QuestEntity1Id, HitsoryEventEnitiyRole.Target)
                 },
-                _ => throw new Domain.Exceptions.ApplicationException("Неизвестный тип события для определения ролей")
+                _ => throw new Domain.Exceptions.YagoException("Неизвестный тип события для определения ролей")
             };
         }
     }

@@ -19,7 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\YAGO.FantasyWorld.Server.Application.csproj" />
-    <ProjectReference Include="..\Domain\YAGO.FantasyWorld.Server.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="YAGO.FantasyWorld.Domain">
+      <HintPath>..\..\libs\YAGO.FantasyWorld.Domain.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Domain.Users;
 using YAGO.FantasyWorld.Server.Application.Authorization;
-using YAGO.FantasyWorld.Server.Application.Authorization.Models;
-using YAGO.FantasyWorld.Server.Host.Models.Authorization;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers
 {
@@ -33,14 +31,7 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
         public Task<AuthorizationData> Register(RegisterRequest request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (!ModelState.IsValid)
-            {
-                var stateErrors = ModelState.SelectMany(s => s.Value.Errors.Select(e => e.ErrorMessage));
-                throw new BadHttpRequestException(string.Join(". ", stateErrors));
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-            return _userAuthorizationService.RegisterAsync(request.UserName, request.Password, cancellationToken);
+            return _userAuthorizationService.RegisterAsync(request.UserName, request.Password, request.PasswordConfirm, cancellationToken);
         }
 
 
@@ -48,13 +39,6 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
         [Route("login")]
         public Task<AuthorizationData> Login(LoginRequest request, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (!ModelState.IsValid)
-            {
-                var stateErrors = ModelState.SelectMany(s => s.Value.Errors.Select(e => e.ErrorMessage));
-                throw new BadHttpRequestException(string.Join(". ", stateErrors));
-            }
-
             cancellationToken.ThrowIfCancellationRequested();
             return _userAuthorizationService.LoginAsync(request.UserName, request.Password, cancellationToken);
         }

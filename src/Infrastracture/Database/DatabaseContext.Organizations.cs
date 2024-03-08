@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Domain.Exceptions;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain;
-using YAGO.FantasyWorld.Server.Domain.Exceptions;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
     public partial class DatabaseContext : IOrganizationDatabaseService
     {
-        public async Task<IEnumerable<Organization>> GetOrganizations(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Domain.Organizations.Organization>> GetOrganizations(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organizations = await Organizations
@@ -21,7 +20,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
                 .Select(o => o.ToDomain());
         }
 
-        public async Task<Organization> FindOrganization(long organizationId, CancellationToken cancellationToken)
+        public async Task<Domain.Organizations.Organization> FindOrganization(long organizationId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organization = await Organizations
@@ -36,7 +35,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             var organization = await Organizations
                 .FindAsync(new object[] { organizationId }, cancellationToken: cancellationToken);
             if (organization == null)
-                throw new ApplicationException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
+                throw new YagoException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
 
             organization.UserId = userId;
             Update(organization);

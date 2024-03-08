@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Quests;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
 {

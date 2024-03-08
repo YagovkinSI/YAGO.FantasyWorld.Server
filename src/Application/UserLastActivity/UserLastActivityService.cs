@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Domain.Users;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain;
 
 namespace YAGO.FantasyWorld.Server.Application.UserLastActivity
 {

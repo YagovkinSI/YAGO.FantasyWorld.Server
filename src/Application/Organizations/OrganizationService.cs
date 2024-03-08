@@ -2,10 +2,10 @@
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Application.Authorization.Models;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain;
-using YAGO.FantasyWorld.Server.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.Organizations;
+using YAGO.FantasyWorld.Domain.Users;
 
 namespace YAGO.FantasyWorld.Server.Application.Organizations
 {
@@ -58,18 +58,18 @@ namespace YAGO.FantasyWorld.Server.Application.Organizations
             cancellationToken.ThrowIfCancellationRequested();
             var authorizationData = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
             if (!authorizationData.IsAuthorized)
-                throw new NotAuthorizedApplicationException();
+                throw new YagoNotAuthorizedException();
 
             if (authorizationData.User.OrganizationId != null)
-                throw new ApplicationException("У вас уже есть организация.", 400);
+                throw new YagoException("У вас уже есть организация.", 400);
 
             cancellationToken.ThrowIfCancellationRequested();
             var organization = await FindOrganization(organizationId, cancellationToken);
             if (organization == null)
-                throw new ApplicationException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
+                throw new YagoException(string.Format("Организация с ID={0} не найдена.", organizationId), 400);
 
             if (organization.UserLink != null)
-                throw new ApplicationException(string.Format("Организация с ID={0} уже занята другим игроком.", organizationId), 400);
+                throw new YagoException(string.Format("Организация с ID={0} уже занята другим игроком.", organizationId), 400);
 
             cancellationToken.ThrowIfCancellationRequested();
             await _organizationDatabaseService.SetUserForOrganization(organizationId, authorizationData.User.Id, cancellationToken);

@@ -1,6 +1,7 @@
 ﻿using System;
-using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Entities;
+using YAGO.FantasyWorld.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 {
@@ -54,7 +55,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
                 QuestOptionResultType.Neitral,
                 "Не смотря на Ваши старания, соглашение о сотрудничестве не удалось достичь, оставляя Вас без значительных изменений в развитии Ваших владений.",
                 weight,
-                Array.Empty<QuestOptionResultEntity>()
+                Array.Empty<EntityChange>()
             );
         }
 

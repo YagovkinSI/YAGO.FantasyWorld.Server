@@ -1,5 +1,5 @@
-﻿using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Quests;
+﻿using YAGO.FantasyWorld.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 {

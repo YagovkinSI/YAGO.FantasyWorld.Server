@@ -1,9 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Server.Application.Authorization.Models;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.UserLastActivity;
+using YAGO.FantasyWorld.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.Users;
 
 namespace YAGO.FantasyWorld.Server.Application.Authorization
 {
@@ -43,10 +46,16 @@ namespace YAGO.FantasyWorld.Server.Application.Authorization
         /// </summary>
         /// <param name="userName">Логин пользователя</param>
         /// <param name="password">Пароль пользователя</param>
+        /// <param name="passwordConfirm">Повторение пароля пользователя</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Данные авторизации</returns>
-        public async Task<AuthorizationData> RegisterAsync(string userName, string password, CancellationToken cancellationToken)
+        public async Task<AuthorizationData> RegisterAsync(string userName, string password, string passwordConfirm, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            var validateErrors = FindValidateErrors(userName, password, passwordConfirm);
+            if (validateErrors.Any())
+                throw new YagoException(string.Join(" ", validateErrors));
+
             cancellationToken.ThrowIfCancellationRequested();
             var authorizationData = await _authorizationService.RegisterAsync(userName, password, cancellationToken);
             if (!authorizationData.IsAuthorized)
@@ -66,6 +75,11 @@ namespace YAGO.FantasyWorld.Server.Application.Authorization
         /// <returns>Данные авторизации</returns>
         public async Task<AuthorizationData> LoginAsync(string userName, string password, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            var validateErrors = FindValidateErrors(userName, password);
+            if (validateErrors.Any())
+                throw new YagoException(string.Join(" ", validateErrors));
+
             cancellationToken.ThrowIfCancellationRequested();
             var authorizationData = await _authorizationService.LoginAsync(userName, password, cancellationToken);
             if (!authorizationData.IsAuthorized)
@@ -92,6 +106,30 @@ namespace YAGO.FantasyWorld.Server.Application.Authorization
             tasks[0] = _userLastActivityService.UpdateUserLastActivity(authorizationData.User, cancellationToken);
             tasks[1] = _authorizationService.LogoutAsync(claimsPrincipal, cancellationToken);
             Task.WaitAll(tasks, cancellationToken);
+        }
+
+        private List<string> FindValidateErrors(string userName, string password, string passwordConfirm)
+        {
+            var errorList = FindValidateErrors(userName, password);
+
+            if (string.IsNullOrEmpty(passwordConfirm))
+                errorList.Add("Необходимо повторить пароль.");
+            if (password != passwordConfirm)
+                errorList.Add("Введенные пароли не совпадают.");
+
+            return errorList;
+        }
+
+        private List<string> FindValidateErrors(string userName, string password)
+        {
+            var errorList = new List<string>();
+
+            if (string.IsNullOrEmpty(userName))
+                errorList.Add("Необходимо указать логин.");
+            if (string.IsNullOrEmpty(password))
+                errorList.Add("Необходимо указать пароль.");
+
+            return errorList;
         }
     }
 }

@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
-using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Quests;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
+using YAGO.FantasyWorld.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
+using YAGO.FantasyWorld.Domain.Entities;
+using YAGO.FantasyWorld.Domain.Entities.Enums;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
 {
@@ -70,15 +72,15 @@ namespace YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base
             };
         }
 
-        private static QuestOptionResultEntity CreateChangeOrganization(long organizationId, int changeParameter)
+        private static EntityChange CreateChangeOrganization(long organizationId, int changeParameter)
         {
-            return new QuestOptionResultEntity
+            return new EntityChange
             (
                 EntityType.Organization,
                 organizationId,
-                new QuestOptionResultEntityParameter[]
+                new EntityParameterChange[]
                 {
-                    new(Domain.EntityParametres.OrganizationPower, changeParameter)
+                    new(EntityParameter.OrganizationPower, changeParameter.ToString())
                 }
             );
         }

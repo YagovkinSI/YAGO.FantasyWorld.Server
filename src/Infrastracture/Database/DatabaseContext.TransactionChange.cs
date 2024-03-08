@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Domain.Entities;
+using YAGO.FantasyWorld.Domain.Entities.Enums;
+using YAGO.FantasyWorld.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.HistoryEvents;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
-using YAGO.FantasyWorld.Server.Domain;
-using YAGO.FantasyWorld.Server.Domain.HistoryEvents;
-using YAGO.FantasyWorld.Server.Domain.Quests;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database
 {
@@ -18,7 +19,7 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         {
             cancellationToken.ThrowIfCancellationRequested();
             var quest = Quests.Find(questId);
-            quest.Status = Domain.Enums.QuestStatus.Completed;
+            quest.Status = QuestStatus.Completed;
 
             foreach (var entity in historyEvent.ParameterChanges)
             {
@@ -32,31 +33,31 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
         }
 
         private async Task HandleChageEntity(
-            QuestOptionResultEntity entity,
+            EntityChange entity,
             CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             switch (entity.EntityType)
             {
-                case Domain.Enums.EntityType.Organization:
+                case EntityType.Organization:
                     await HandleChageOrganization(entity, cancellationToken);
                     break;
-                case Domain.Enums.EntityType.Unknown:
+                case EntityType.Unknown:
                 default:
-                    throw new ApplicationException("Неизвестный тип данных для изменения");
+                    throw new YagoException("Неизвестный тип данных для изменения");
             }
         }
 
-        private Task HandleChageOrganization(QuestOptionResultEntity entity, CancellationToken cancellationToken)
+        private Task HandleChageOrganization(EntityChange entity, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var organization = Organizations.Find(entity.EntityId);
-            foreach (var parameter in entity.QuestOptionResultEntityParameters)
+            foreach (var parameter in entity.EntityParametersChange)
             {
                 organization.Power += parameter.EntityParameter switch
                 {
-                    EntityParametres.OrganizationPower => int.Parse(parameter.Change),
-                    _ => throw new ApplicationException("Неизвестный тип параметра организации для изменения"),
+                    EntityParameter.OrganizationPower => int.Parse(parameter.Change),
+                    _ => throw new YagoException("Неизвестный тип параметра организации для изменения"),
                 };
             }
             return Task.CompletedTask;

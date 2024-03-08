@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using YAGO.FantasyWorld.Server.Domain.Enums;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 {

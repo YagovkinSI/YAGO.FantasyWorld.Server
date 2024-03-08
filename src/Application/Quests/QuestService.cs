@@ -4,14 +4,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using YAGO.FantasyWorld.Domain.Entities.Enums;
+using YAGO.FantasyWorld.Domain.Exceptions;
+using YAGO.FantasyWorld.Domain.Quests;
+using YAGO.FantasyWorld.Domain.Quests.Enums;
 using YAGO.FantasyWorld.Server.Application.History;
 using YAGO.FantasyWorld.Server.Application.Interfaces;
 using YAGO.FantasyWorld.Server.Application.Organizations;
 using YAGO.FantasyWorld.Server.Application.Quests.QuestList.Base;
-using YAGO.FantasyWorld.Server.Domain.Enums;
-using YAGO.FantasyWorld.Server.Domain.Exceptions;
-using YAGO.FantasyWorld.Server.Domain.Quests;
-using ApplicationException = YAGO.FantasyWorld.Server.Domain.Exceptions.ApplicationException;
 
 namespace YAGO.FantasyWorld.Server.Application.Quests
 {
@@ -56,9 +56,9 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             cancellationToken.ThrowIfCancellationRequested();
             var user = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
             if (!user.IsAuthorized)
-                throw new ApplicationException("Для получения квеста необходимо авторизоваться");
+                throw new YagoException("Для получения квеста необходимо авторизоваться");
             if (user.User.OrganizationId == null)
-                throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
+                throw new YagoException("Для получения квеста необходимо выбрать организацию");
 
             var lastQuests = await _questDatabaseService.GetLastQuestes(user.User.OrganizationId.Value, _questReadinessService.QuestTimeoutCount, cancellationToken);
             return await TryGetNotCompletedQuest(lastQuests, cancellationToken)
@@ -87,15 +87,15 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             cancellationToken.ThrowIfCancellationRequested();
             var user = await _authorizationService.GetCurrentUser(claimsPrincipal, cancellationToken);
             if (!user.IsAuthorized)
-                throw new ApplicationException("Для получения квеста необходимо авторизоваться");
+                throw new YagoException("Для получения квеста необходимо авторизоваться");
             if (user.User.OrganizationId == null)
-                throw new ApplicationException("Для получения квеста необходимо выбрать организацию");
+                throw new YagoException("Для получения квеста необходимо выбрать организацию");
 
             var quest = await _questDatabaseService.FindQuest(questId, cancellationToken);
             if (quest.OrganizationId != user.User.OrganizationId)
-                throw new ApplicationException("Некорректный идентификатор квеста.");
+                throw new YagoException("Некорректный идентификатор квеста.");
             if (quest.Status != QuestStatus.Created)
-                throw new ApplicationException("Неверный статус квеста.");
+                throw new YagoException("Неверный статус квеста.");
 
             var questDatails = GetQuestDatails(quest);
             var result = await questDatails.HandleQuestOption(questOptionId, cancellationToken);
@@ -110,9 +110,9 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
         {
             var mainText = questOptionResult.Text;
 
-            var organizationResult = questOptionResult.QuestOptionResultEntities
+            var organizationResult = questOptionResult.EntitiesChange
                 .SingleOrDefault(r => r.EntityType == EntityType.Organization && r.EntityId == organizationId)
-                ?.QuestOptionResultEntityParameters.SingleOrDefault(r => r.EntityParameter == Domain.EntityParametres.OrganizationPower)
+                ?.EntityParametersChange.SingleOrDefault(r => r.EntityParameter == EntityParameter.OrganizationPower)
                 ?.Change;
             var organizationResultInt = organizationResult == null ? 0 : int.Parse(organizationResult);
             var organizationResultText = organizationResultInt != 0
@@ -121,9 +121,9 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
                     : $"Ваше могущество уменьшилось на {-organizationResultInt}"
                 : "Ваше могущество не изменилось";
 
-            var oponnentResult = questOptionResult.QuestOptionResultEntities
+            var oponnentResult = questOptionResult.EntitiesChange
                 .SingleOrDefault(r => r.EntityType == EntityType.Organization && r.EntityId != organizationId)
-                ?.QuestOptionResultEntityParameters.SingleOrDefault(r => r.EntityParameter == Domain.EntityParametres.OrganizationPower)
+                ?.EntityParametersChange.SingleOrDefault(r => r.EntityParameter == EntityParameter.OrganizationPower)
                 ?.Change;
             var oponnentResultInt = oponnentResult == null ? 0 : int.Parse(oponnentResult);
             var oponnentResultText = oponnentResultInt != 0
@@ -162,7 +162,7 @@ namespace YAGO.FantasyWorld.Server.Application.Quests
             {
                 QuestType.Unknown => throw new ApplicationException("Неизвестный тип квеста! Обратитесь к разработчику."),
                 QuestType.BaseQuest => new BaseQuest(quest, _organizationService),
-                _ => throw new NotImplementedApplicationException(),
+                _ => throw new YagoNotImplementedException(),
             };
         }
 

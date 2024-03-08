@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\YAGO.FantasyWorld.Server.Domain.csproj" />
+    <Reference Include="YAGO.FantasyWorld.Domain">
+      <HintPath>..\..\libs\YAGO.FantasyWorld.Domain.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

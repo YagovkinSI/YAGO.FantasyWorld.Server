@@ -39,15 +39,25 @@ namespace YAGO.FantasyWorld.Server.Host
 
         private static void AddAppServices(IServiceCollection services)
         {
-            services.AddScoped<UserLastActivityService>();
-            services.AddScoped<AuthorizationService>();
-            services.AddScoped<OrganizationService>();
             services.AddScoped<AdminService>();
+            AddUserServices(services);
+            services.AddScoped<OrganizationService>();
+            AddQuestServices(services);
+            services.AddScoped<HistoryService>();
+        }
+
+        private static void AddUserServices(IServiceCollection services)
+        {
             services.AddScoped<UserService>();
+            services.AddScoped<AuthorizationService>();
+            services.AddScoped<UserLastActivityService>();
+        }
+
+        private static void AddQuestServices(IServiceCollection services)
+        {
             services.AddScoped<QuestService>();
             services.AddScoped<QuestGenerator>();
             services.AddScoped<QuestReadinessService>();
-            services.AddScoped<HistoryService>(); 
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
