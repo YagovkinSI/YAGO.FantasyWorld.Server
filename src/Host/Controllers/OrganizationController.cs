@@ -35,12 +35,12 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
             return await _organizationService.FindOrganization(organizationId, cancellationToken);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("setCurrentUserForOrganization")]
-        public async Task<AuthorizationData> SetCurrentUserForOrganization(long organizationId, CancellationToken cancellationToken)
+        public async Task<AuthorizationData> SetCurrentUserForOrganization(SetOrganizationUserRequest request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return await _organizationService.SetCurrentUserForOrganization(organizationId, HttpContext.User, cancellationToken);
+            return await _organizationService.SetCurrentUserForOrganization(request.OrganizationId, HttpContext.User, cancellationToken);
         }
     }
 }
