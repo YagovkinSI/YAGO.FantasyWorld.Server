@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using YAGO.FantasyWorld.Domain.HistoryEvents.Enums;
 
 namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
@@ -47,6 +49,19 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
 
             model.HasIndex(m => m.DateTimeUtc);
             model.HasIndex(m => m.Type);
+        }
+
+        internal Domain.HistoryEvents.HistoryEvent ToDomain()
+        {
+            return new Domain.HistoryEvents.HistoryEvent
+            {
+                Id = Id,
+                Type = Type,
+                DateTimeUtc = DateTimeUtc,
+                HistoryEventEntities = JsonConvert.DeserializeObject<Domain.HistoryEvents.HistoryEventEntity[]>(HistoryEventEntities),
+                ParameterChanges = JsonConvert.DeserializeObject<Domain.Entities.EntityChange[]>(ParameterChanges),
+                EntityWeights = EntityWeights.Select(w => w.ToDomain()).ToArray()
+            };
         }
     }
 }

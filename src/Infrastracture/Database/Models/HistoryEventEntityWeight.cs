@@ -51,5 +51,17 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database.Models
             model.HasIndex(m => new { m.EntityType, m.EntityId });
             model.HasIndex(m => m.Weight);
         }
+
+        internal Domain.HistoryEvents.HistoryEventEntityWeight ToDomain()
+        {
+            return new Domain.HistoryEvents.HistoryEventEntityWeight
+            {
+                Id = Id,
+                EntityType = EntityType,
+                EntityId = EntityId,
+                HistoryEventId = HistoryEventId,
+                Weight = Weight
+            };
+        }
     }
 }

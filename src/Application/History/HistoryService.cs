@@ -9,12 +9,88 @@ using YAGO.FantasyWorld.Domain.HistoryEvents;
 using YAGO.FantasyWorld.Domain.HistoryEvents.Enums;
 using YAGO.FantasyWorld.Domain.Quests;
 using YAGO.FantasyWorld.Domain.Quests.Enums;
+using YAGO.FantasyWorld.Server.Application.Interfaces;
 
 namespace YAGO.FantasyWorld.Server.Application.History
 {
     public class HistoryService
     {
         private const int QUEST_TYPE_START = 1000000;
+
+        private readonly IHistoryEventDatabaseSerice _historyEventDatabaseSerice;
+        private readonly IEntityProviderDatabaseSerice _entityProviderDatabaseSerice;
+
+        public HistoryService(IHistoryEventDatabaseSerice historyEventDatabaseSerice,
+            IEntityProviderDatabaseSerice entityProviderDatabaseSerice)
+        {
+            _historyEventDatabaseSerice = historyEventDatabaseSerice;
+            _entityProviderDatabaseSerice = entityProviderDatabaseSerice;
+        }
+
+        /// <summary>
+        /// Получить три последних события в отношениях двух организаций
+        /// </summary>
+        /// <param name="organizationFirstId">Идентификатор первой организации</param>
+        /// <param name="organizationSecondId">Идентификатор второй организаци</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<string>> GetOrganizationRelations(long organizationFirstId, long organizationSecondId, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var entities = new YagoEntity[]
+            {
+                new() { Id = organizationFirstId, EntityType = EntityType.Organization },
+                new() { Id = organizationSecondId, EntityType = EntityType.Organization },
+            };
+            var events = await _historyEventDatabaseSerice
+                .GetOrganizationHistory(entities, 3);
+
+            return events
+                .Select(e => GetEventText(e).GetAwaiter().GetResult());
+        }
+
+        private async Task<string> GetEventText(HistoryEvent historyEvent)
+        {
+            var initiatorName = await GetEnityName(historyEvent.HistoryEventEntities.Single(o => o.Role == HitsoryEventEnitiyRole.Initiator));
+            var targetName = await GetEnityName(historyEvent.HistoryEventEntities.Single(o => o.Role == HitsoryEventEnitiyRole.Target));
+
+            return historyEvent.Type switch
+            {
+                HistoryEventType.BaseQuest_Neitral_CriticalSuccess =>
+                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
+                HistoryEventType.BaseQuest_Neitral_Success =>
+                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
+                HistoryEventType.BaseQuest_Neitral_Neitral =>
+                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
+                HistoryEventType.BaseQuest_Neitral_Fail =>
+                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
+                HistoryEventType.BaseQuest_Neitral_CriticalFail =>
+                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
+                HistoryEventType.BaseQuest_Friendly_CriticalSuccess =>
+                    $"Владение {initiatorName} организует крайне успешную торговую сделку с владением {targetName}.",
+                HistoryEventType.BaseQuest_Friendly_Success =>
+                    $"Владение {initiatorName} организует успешную торговую сделку с владением {targetName}.",
+                HistoryEventType.BaseQuest_Friendly_Neitral =>
+                    $"Владение {initiatorName} безуспешно пытается организовать торговую сделку с владением {targetName}.",
+                HistoryEventType.BaseQuest_Friendly_Fail =>
+                    $"Владение {initiatorName} организует невыгодню для себя торговую сделку с владением {targetName}.",
+                HistoryEventType.BaseQuest_Friendly_CriticalFail =>
+                $"Владение {initiatorName} организует торговую сделку с владением {targetName}, но торговый караван разграблен по пути разбойниками.",
+                HistoryEventType.BaseQuest_Agressive_CriticalSuccess =>
+                    $"Владение {initiatorName} совершает набег на владение {targetName} и полностью разоряет область.",
+                HistoryEventType.BaseQuest_Agressive_Success =>
+                    $"Владение {initiatorName} совершает успешный набег на владение {targetName}.",
+                HistoryEventType.BaseQuest_Agressive_Neitral =>
+                    $"Неизвестное событие {HistoryEventType.BaseQuest_Agressive_Neitral}",
+                HistoryEventType.BaseQuest_Agressive_Fail =>
+                    $"Владение {initiatorName} совершает набег на владение {targetName}, но понеся некоторые потери вы вернулись домой почти с пустыми руками.",
+                HistoryEventType.BaseQuest_Agressive_CriticalFail =>
+                    $"Владение {initiatorName} совершает набег на владение {targetName}, но отряд попал в засаду и понёс ужасные потери.",
+                _ => "Неизвестное событие",
+            };
+        }
+
+        private async Task<string> GetEnityName(HistoryEventEntity historyEventEntity) => await _entityProviderDatabaseSerice.GetEntityName(historyEventEntity.EntityType, historyEventEntity.EntityId);
 
         /// <summary>
         /// Создание исторического события на основе результатов квеста
@@ -65,7 +141,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
 
             foreach (var entity in enities)
             {
-                if (!entityWeights.Any(w => w.EntityType == entity.EntityType && w.EntityId == entity.EntityId))
+                if (!entityWeights.Exists(w => w.EntityType == entity.EntityType && w.EntityId == entity.EntityId))
                     entityWeights.Add(new HistoryEventEntityWeight { EntityType = entity.EntityType, EntityId = entity.EntityId, Weight = 1 });
             }
 
