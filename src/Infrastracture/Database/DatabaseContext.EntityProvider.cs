@@ -13,6 +13,8 @@ namespace YAGO.FantasyWorld.Server.Infrastracture.Database
             {
                 case EntityType.Organization:
                     var organization = await Organizations.FindAsync(entityId);
+                    if (organization == null)
+                        throw new YagoException($"В БД не найдена организация с ID={entityId}");
                     return organization.Name;
                 default:
                     throw new YagoException("Неизвестный тип сущности");

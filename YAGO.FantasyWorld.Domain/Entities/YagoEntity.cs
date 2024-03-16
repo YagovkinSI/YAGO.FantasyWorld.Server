@@ -3,6 +3,9 @@ using YAGO.FantasyWorld.Domain.Entities.Enums;
 
 namespace YAGO.FantasyWorld.Domain.Entities
 {
+    /// <summary>
+    /// Игровая сущность
+    /// </summary>
     public class YagoEntity
     {
         public YagoEntity(long id, EntityType entityType)

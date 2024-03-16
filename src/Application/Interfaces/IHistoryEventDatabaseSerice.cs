@@ -5,10 +5,13 @@ using YAGO.FantasyWorld.Domain.HistoryEvents;
 
 namespace YAGO.FantasyWorld.Server.Application.Interfaces
 {
+    /// <summary>
+    /// Интерфейс получения исторических событий из БД
+    /// </summary>
     public interface IHistoryEventDatabaseSerice
     {
         /// <summary>
-        /// Получение истории организации
+        /// Получение истории сущностей
         /// </summary>
         /// <param name="entityObjects">Объекты участники</param>
         /// <param name="eventCount">Колличиество записей</param>
