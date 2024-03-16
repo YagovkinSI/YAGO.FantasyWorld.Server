@@ -20,7 +20,7 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
         }
 
         [HttpGet]
-        [Route("getQuest")]
+        [Route("getOrganizationRelations")]
         public async Task<IEnumerable<string>> GetOrganizationRelations(long organizationFirstId, long organizationSecondId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

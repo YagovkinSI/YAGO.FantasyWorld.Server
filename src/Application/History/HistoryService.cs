@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using YAGO.FantasyWorld.Domain.Entities;
@@ -43,7 +44,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
                 new() { Id = organizationSecondId, EntityType = EntityType.Organization },
             };
             var events = await _historyEventDatabaseSerice
-                .GetOrganizationHistory(entities, 3);
+                .GetOrganizationHistory(entities, 5);
 
             return events
                 .Select(e => GetEventText(e).GetAwaiter().GetResult());
@@ -51,43 +52,55 @@ namespace YAGO.FantasyWorld.Server.Application.History
 
         private async Task<string> GetEventText(HistoryEvent historyEvent)
         {
+            var eventType = (int)historyEvent.Type / 1000000;
+            return eventType switch
+            { 
+                1 => await GetQuestHistoryEventText(historyEvent),
+                _ => "Неизвестное событие"
+            };
+        }
+
+        private async Task<string> GetQuestHistoryEventText(HistoryEvent historyEvent)
+        {
+            var questType = (int)historyEvent.Type % 1000000 / 100;
+            return questType switch
+            {
+                1 => await GetBaseQuestHistoryEventText(historyEvent), 
+                _ => "Неизвестное событие"
+            };
+        }
+
+        private async Task<string> GetBaseQuestHistoryEventText(HistoryEvent historyEvent)
+        {
             var initiatorName = await GetEnityName(historyEvent.HistoryEventEntities.Single(o => o.Role == HitsoryEventEnitiyRole.Initiator));
             var targetName = await GetEnityName(historyEvent.HistoryEventEntities.Single(o => o.Role == HitsoryEventEnitiyRole.Target));
 
-            return historyEvent.Type switch
+            var historyEventText = new StringBuilder();
+            historyEventText.AppendLine($"Владение {initiatorName} обсуждает на совете отношения с владением {targetName}.");
+
+            var optionType = (int)historyEvent.Type % 100 / 10;
+            var optionText = optionType switch
             {
-                HistoryEventType.BaseQuest_Neitral_CriticalSuccess =>
-                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
-                HistoryEventType.BaseQuest_Neitral_Success =>
-                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
-                HistoryEventType.BaseQuest_Neitral_Neitral =>
-                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
-                HistoryEventType.BaseQuest_Neitral_Fail =>
-                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
-                HistoryEventType.BaseQuest_Neitral_CriticalFail =>
-                    $"Владение {initiatorName} сохраняет нейтралитет с владением {targetName}.",
-                HistoryEventType.BaseQuest_Friendly_CriticalSuccess =>
-                    $"Владение {initiatorName} организует крайне успешную торговую сделку с владением {targetName}.",
-                HistoryEventType.BaseQuest_Friendly_Success =>
-                    $"Владение {initiatorName} организует успешную торговую сделку с владением {targetName}.",
-                HistoryEventType.BaseQuest_Friendly_Neitral =>
-                    $"Владение {initiatorName} безуспешно пытается организовать торговую сделку с владением {targetName}.",
-                HistoryEventType.BaseQuest_Friendly_Fail =>
-                    $"Владение {initiatorName} организует невыгодню для себя торговую сделку с владением {targetName}.",
-                HistoryEventType.BaseQuest_Friendly_CriticalFail =>
-                $"Владение {initiatorName} организует торговую сделку с владением {targetName}, но торговый караван разграблен по пути разбойниками.",
-                HistoryEventType.BaseQuest_Agressive_CriticalSuccess =>
-                    $"Владение {initiatorName} совершает набег на владение {targetName} и полностью разоряет область.",
-                HistoryEventType.BaseQuest_Agressive_Success =>
-                    $"Владение {initiatorName} совершает успешный набег на владение {targetName}.",
-                HistoryEventType.BaseQuest_Agressive_Neitral =>
-                    $"Неизвестное событие {HistoryEventType.BaseQuest_Agressive_Neitral}",
-                HistoryEventType.BaseQuest_Agressive_Fail =>
-                    $"Владение {initiatorName} совершает набег на владение {targetName}, но понеся некоторые потери вы вернулись домой почти с пустыми руками.",
-                HistoryEventType.BaseQuest_Agressive_CriticalFail =>
-                    $"Владение {initiatorName} совершает набег на владение {targetName}, но отряд попал в засаду и понёс ужасные потери.",
-                _ => "Неизвестное событие",
+                1 => "- Решение: Сохранять нейтралитет и поддерживать мирные отношения.",
+                2 => "- Решение: Искать взаимовыгодные сделки и укреплять экономическую связь.",
+                3 => "- Решение: Организовать набег с целью наживы и увеличения могущества.",
+                _ => "- Неизвестное решение."
             };
+            historyEventText.AppendLine(optionText);
+
+            var resultType = (int)historyEvent.Type % 10;
+            var resultText = resultType switch
+            {
+                1 => "- Результат: Большой успех.",
+                2 => "- Результат: Успех.",
+                3 => "- Результат: Нейтральный результат.",
+                4 => "- Результат: Провал.",
+                5 => "- Результат: Полный провал.",
+                _ => "- Неизвестное результат."
+            };
+            historyEventText.AppendLine(resultText);
+
+            return historyEventText.ToString();
         }
 
         private async Task<string> GetEnityName(HistoryEventEntity historyEventEntity) => await _entityProviderDatabaseSerice.GetEntityName(historyEventEntity.EntityType, historyEventEntity.EntityId);
@@ -116,6 +129,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
                 ParameterChanges = result.EntitiesChange
             });
         }
+
         private HistoryEventType GetHistoryEventType(QuestType type, int optionId, QuestOptionResultType result)
         {
             var questTypeInt = QUEST_TYPE_START + ((int)type * 100) + (optionId * 10) + ((int)result);
