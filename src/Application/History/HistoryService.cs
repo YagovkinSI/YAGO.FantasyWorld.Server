@@ -89,7 +89,15 @@ namespace YAGO.FantasyWorld.Server.Application.History
             historyEventText.AppendLine(optionText);
 
             var resultType = (int)historyEvent.Type % 10;
-            var resultText = resultType switch
+            var resultText = GetQuestResultText(resultType);
+            historyEventText.AppendLine(resultText);
+
+            return historyEventText.ToString();
+        }
+
+        private static string GetQuestResultText(int resultType)
+        {
+            return resultType switch
             {
                 1 => "- Результат: Большой успех.",
                 2 => "- Результат: Успех.",
@@ -98,9 +106,6 @@ namespace YAGO.FantasyWorld.Server.Application.History
                 5 => "- Результат: Полный провал.",
                 _ => "- Неизвестное результат."
             };
-            historyEventText.AppendLine(resultText);
-
-            return historyEventText.ToString();
         }
 
         private async Task<string> GetEnityName(HistoryEventEntity historyEventEntity) => await _entityProviderDatabaseSerice.GetEntityName(historyEventEntity.EntityType, historyEventEntity.EntityId);
