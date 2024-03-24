@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Domain.Entities;
 using YAGO.FantasyWorld.Domain.HistoryEvents;
 
 namespace YAGO.FantasyWorld.Server.Application.Interfaces
@@ -13,9 +12,9 @@ namespace YAGO.FantasyWorld.Server.Application.Interfaces
         /// <summary>
         /// Получение истории сущностей
         /// </summary>
-        /// <param name="entityObjects">Объекты участники</param>
-        /// <param name="eventCount">Колличиество записей</param>
+        /// <param name="historyEventFilter">Фильтр получения исторических событий</param>
+        /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Список событий</returns>
-        Task<HistoryEvent[]> GetOrganizationHistory(IEnumerable<YagoEntity> entityObjects, int eventCount);
+        Task<HistoryEvent[]> GetHistoryEvents(HistoryEventFilter historyEventFilter, CancellationToken cancellationToken);
     }
 }
