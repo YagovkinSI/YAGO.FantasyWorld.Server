@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using YAGO.FantasyWorld.Domain.Quests;
+using YAGO.FantasyWorld.Domain.HistoryEvents;
 using YAGO.FantasyWorld.Server.Application.History;
 
 namespace YAGO.FantasyWorld.Server.Host.Controllers
@@ -19,12 +18,12 @@ namespace YAGO.FantasyWorld.Server.Host.Controllers
             _historyService = historyService;
         }
 
-        [HttpGet]
-        [Route("getOrganizationRelations")]
-        public async Task<IEnumerable<string>> GetOrganizationRelations(long organizationFirstId, long organizationSecondId, CancellationToken cancellationToken)
+        [HttpPost]
+        [Route("getHistoryEvents")]
+        public async Task<IEnumerable<string>> GetHistoryEvents(HistoryEventFilter historyEventFilter, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return await _historyService.GetOrganizationRelations(organizationFirstId, organizationSecondId, cancellationToken);
+            return await _historyService.GetHistoryEvents(historyEventFilter, cancellationToken);
         }
     }
 }

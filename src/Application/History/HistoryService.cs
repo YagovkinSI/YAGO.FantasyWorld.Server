@@ -31,20 +31,14 @@ namespace YAGO.FantasyWorld.Server.Application.History
         /// <summary>
         /// Получить три последних события в отношениях двух организаций
         /// </summary>
-        /// <param name="organizationFirstId">Идентификатор первой организации</param>
-        /// <param name="organizationSecondId">Идентификатор второй организаци</param>
+        /// <param name="historyEventFilter">Фильтр получения исторических событий</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
-        public async Task<IEnumerable<string>> GetOrganizationRelations(long organizationFirstId, long organizationSecondId, CancellationToken cancellationToken)
+        /// <returns>Список событий</returns>
+        public async Task<IEnumerable<string>> GetHistoryEvents(HistoryEventFilter historyEventFilter, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var entities = new YagoEntity[]
-            {
-                new() { Id = organizationFirstId, EntityType = EntityType.Organization },
-                new() { Id = organizationSecondId, EntityType = EntityType.Organization },
-            };
             var events = await _historyEventDatabaseSerice
-                .GetOrganizationHistory(entities, 5);
+                .GetHistoryEvents(historyEventFilter, cancellationToken);
 
             return events
                 .Select(e => GetEventText(e).GetAwaiter().GetResult());
@@ -54,7 +48,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
         {
             var eventType = (int)historyEvent.Type / 1000000;
             return eventType switch
-            { 
+            {
                 1 => await GetQuestHistoryEventText(historyEvent),
                 _ => "Неизвестное событие"
             };
@@ -65,7 +59,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
             var questType = (int)historyEvent.Type % 1000000 / 100;
             return questType switch
             {
-                1 => await GetBaseQuestHistoryEventText(historyEvent), 
+                1 => await GetBaseQuestHistoryEventText(historyEvent),
                 _ => "Неизвестное событие"
             };
         }
