@@ -47,24 +47,44 @@ namespace YAGO.FantasyWorld.Server.Application.History
         private async Task<string> GetEventText(HistoryEvent historyEvent)
         {
             var eventType = (int)historyEvent.Type / 1000000;
-            return eventType switch
+
+            var eventDate = GetEventDate(historyEvent.DateTimeUtc);
+
+            var eventText = eventType switch
             {
                 1 => await GetQuestHistoryEventText(historyEvent),
-                _ => "Неизвестное событие"
+                _ => new StringBuilder("Неизвестное событие")
             };
+
+            return $"{eventDate}\r\n{eventText}";
         }
 
-        private async Task<string> GetQuestHistoryEventText(HistoryEvent historyEvent)
+        private string GetEventDate(DateTimeOffset dateTimeUtc)
+        {
+            var now = DateTimeOffset.UtcNow;
+            if (now.Date == dateTimeUtc.Date)
+                return "В текущем сезоне";
+            if ((now.Date - dateTimeUtc.Date).TotalDays == 1)
+                return "В прошлом сезоне";
+            if ((now.Date - dateTimeUtc.Date).TotalDays < 4)
+                return "Менее года назад";
+            if ((now.Date - dateTimeUtc.Date).TotalDays < 40)
+                return "Менее 10 лет назад";
+            return "Не менее 10 лет назад";
+
+        }
+
+        private async Task<StringBuilder> GetQuestHistoryEventText(HistoryEvent historyEvent)
         {
             var questType = (int)historyEvent.Type % 1000000 / 100;
             return questType switch
             {
                 1 => await GetBaseQuestHistoryEventText(historyEvent),
-                _ => "Неизвестное событие"
+                _ => new StringBuilder("Неизвестное событие")
             };
         }
 
-        private async Task<string> GetBaseQuestHistoryEventText(HistoryEvent historyEvent)
+        private async Task<StringBuilder> GetBaseQuestHistoryEventText(HistoryEvent historyEvent)
         {
             var initiatorName = await GetEnityName(historyEvent.HistoryEventEntities.Single(o => o.Role == HitsoryEventEnitiyRole.Initiator));
             var targetName = await GetEnityName(historyEvent.HistoryEventEntities.Single(o => o.Role == HitsoryEventEnitiyRole.Target));
@@ -86,7 +106,7 @@ namespace YAGO.FantasyWorld.Server.Application.History
             var resultText = GetQuestResultText(resultType);
             historyEventText.AppendLine(resultText);
 
-            return historyEventText.ToString();
+            return historyEventText;
         }
 
         private static string GetQuestResultText(int resultType)
